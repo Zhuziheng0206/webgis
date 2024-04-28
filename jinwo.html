@@ -251,6 +251,20 @@
             border: none; /* 移除按钮边框 */
             cursor: pointer; /* 鼠标指针形状 */
         }
+        .add-re-btn{
+            position: absolute;
+            top: 130px; /* 调整按钮距离顶部的距离 */
+            right: 10px; /* 调整按钮距离右侧的距离 */
+            width: 30px; /* 按钮宽度 */
+            height: 30px; /* 按钮高度 */
+            border-radius: 50%; /* 变成圆形 */
+            background-color: mediumpurple; /* 紫色背景 */
+            z-index: 999; /* 确保按钮位于地图之上 */
+            color: white; /* 文本颜色 */
+            font-size: 20px; /* 文本大小 */
+            border: none; /* 移除按钮边框 */
+            cursor: pointer; /* 鼠标指针形状 */
+        }
         .add-marker-btn1 {
             position: absolute;
             top: 100px; /* 调整按钮距离顶部的距离 */
@@ -308,12 +322,35 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 
+    <script type="text/javascript" src="https://cdn.staticfile.net/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
+
+    <!--   Uncomment this line if you want to dataTool extension-->
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/extension/dataTool.min.js"></script>
+
+    <!--  Uncomment this line if you want to use gl extension-->
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts-gl/2/files/dist/echarts-gl.min.js"></script>
+
+    <!--  Uncomment this line if you want to echarts-stat extension-->
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts-stat/latest/files/dist/ecStat.min.js"></script>
+
+    <!--  Uncomment this line if you want to use map-->
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts/4.9.0/files/map/js/china.js"></script>
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts/4.9.0/files/map/js/world.js"></script>
+
+    <!--  Uncomment these two lines if you want to use bmap extension-->
+      <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=hjqgxZicWBBHs7pD4BoUhXBHze7sj2bI"></script>
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/extension/bmap.min.js"></script>
+    
 </head>
 
 <body>
 <button id="add-marker-btn" class="add-marker-btn">+</button>
 
 <button id="add-echarts-btn" class="add-echarts-btn">e</button>
+
+<button id="add-re-btn" class="add-re-btn">r</button>
+
 <div id="pie-chart-container"  style="display: none;"></div>
 
 
@@ -653,6 +690,56 @@
       }
   });
 
+  //添加热力图显示处理程序。
+  var addReBtn=document.getElementById('add-re-btn');
+  addReBtn.addEventListener('click',function(){
+    var ROOT_PATH = 'https://echarts.apache.org/examples';
+    var option;
+
+    $.get(ROOT_PATH + '/data/asset/data/hangzhou-tracks.json', function (data) {
+      var points = [].concat.apply(
+      [],
+      data.map(function (track) {
+        return track.map(function (seg) {
+          return seg.coord.concat([1]);
+        });
+      })
+    );
+    console.log("points->",points);
+    option = {
+      animation: false,
+      bmap: {
+        center: [120.13066322374, 30.240018034923],
+        zoom: 14,
+        roam: true
+      },
+      visualMap: {
+        show: false,
+        top: 'top',
+        min: 0,
+        max: 5,
+        seriesIndex: 0,
+        calculable: true,
+        inRange: {
+          color: ['blue', 'blue', 'green', 'yellow', 'red']
+        }
+      },
+      series: [
+        {
+          type: 'heatmap',
+          coordinateSystem: 'bmap',
+          data: points,
+          pointSize: 5,
+          blurSize: 6
+        }
+      ]
+    };
+    const reLayer = new ol3Echarts(option)
+    reLayer.appendTo(map)
+  });
+});
+
+  //添加Echarts图显示处理程序。
   var addEchartsBtn=document.getElementById('add-echarts-btn');
   addEchartsBtn.addEventListener('click',function(){
     var data = [
