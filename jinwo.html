@@ -700,13 +700,13 @@
     var ROOT_PATH = 'https://echarts.apache.org/examples';
     var option;
 
-    $.get(ROOT_PATH + '/data/asset/data/hangzhou-tracks.json', function (data) {
+    $.get( 'China.json', function (data) {
         if(!reLayerVisible) {
             var points = [].concat.apply(
                 [],
-                data.map(function (track) {
-                    return track.map(function (seg) {
-                        return seg.coord.concat([1]);
+                data.map(function(track) {
+                    return track.children.map(function(city) {
+                        return [parseFloat(city.log), parseFloat(city.lat), 1];
                     });
                 })
             );
