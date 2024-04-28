@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>武汉小区查询系统</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: flex-start; /* 从容器的起始位置开始排列 */
+            align-items: flex-start; /* 从容器的起始位置开始排列 */
+            flex-wrap: wrap;
+        }
+
+
+        #map {
+            flex: 1; /* 占据剩余空间 */
+            height: 700px;
+        }
+
+        #infoBox {
+            display: flex;
+            background-color: white;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 15%;
+            height: 30%; /* 保持与地图相同的高度 */
+        }
+        .table-content {
+            display: none; /* 初始时隐藏表格 */
+            position: absolute; /* 绝对定位 */
+            top: 50%; /* 使表格垂直居中 */
+            transform: translateY(-50%); /* 使表格垂直居中 */
+            max-height: 700px; /* 表格最大高度为地图的高度 */
+            min-height: 350px;
+            /*overflow-y: auto; !* 垂直滚动条 *!*/
+            z-index: 999; /* 确保表格显示在其他内容上方 */
+            background: white;
+
+        }
+
+
+        #data-table {
+            width: 100%; /* 调整表格宽度 */
+            max-height: 100%; /* 设置表格最大高度 */
+            border-collapse: collapse;
+        }
+
+        #data-table th, #data-table td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        #data-table th {
+            background-color: #f2f2f2;
+        }
+
+
+
+        #prev-page {
+            background-color: green;
+            margin-right: 10px;
+            color: white;
+            border-radius: 20px; /* 设置圆角半径为按钮高度的一半 */
+            padding: 5px 10px; /* 调整按钮内边距以保持椭圆形外观 */
+            border: none; /* 去除按钮边框 */
+            cursor: pointer;
+        }
+        #next-page{
+            background-color: green;
+            margin-left: 10px;
+            margin-right: 10px;
+            color: white;
+            border-radius: 20px; /* 设置圆角半径为按钮高度的一半 */
+            padding: 5px 10px; /* 调整按钮内边距以保持椭圆形外观 */
+            border: none; /* 去除按钮边框 */
+            cursor: pointer;
+        }
+
+        #data-table tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        #data-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /*.pagination {*/
+        /*    margin-top: 10px;*/
+        /*    position: relative;*/
+        /*    display: flex;*/
+        /*    justify-content: center;*/
+        /*    align-items: center;*/
+        /*}*/
+
+        .pagination button {
+            /*margin: 0 5px;*/
+            padding: 5px 10px;
+            border: 1px solid #dddddd;
+            background-color: #ffffff;
+            cursor: pointer;
+        }
+        /* 按钮样式 */
+        /*.add-button {*/
+        /*    padding: 10px 20px;*/
+        /*    font-size: 16px;*/
+        /*    border: none;*/
+        /*    border-radius: 5px;*/
+        /*    background-color: mediumpurple;*/
+        /*    color: white;*/
+        /*    cursor: pointer;*/
+        /*    margin-right: 10px;*/
+        /*}*/
+        .chuansong {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: dodgerblue;
+            color: white;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        /*.add-button:hover {*/
+        /*    background-color: purple;*/
+        /*}*/
+        .chuansong:hover{
+            background-color:blue;
+        }
+        /* 输入框样式 */
+        input[type="text"] {
+            padding: 8px;
+            margin-right: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* 下拉菜单样式 */
+        select {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* 距离信息样式 */
+        .distance-info {
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        /* 容器样式 */
+        /*.container {*/
+        /*  display: flex;*/
+        /*  justify-content: center;*/
+        /*  align-items: center;*/
+        /*  flex-wrap: wrap;*/
+        /*}*/
+
+        /* 分隔符间距 */
+        .container > * {
+            margin-bottom: 10px;
+        }
+
+        .pagination button:hover {
+            background-color: #f2f2f2;
+        }
+
+        .action-buttons button {
+            margin-right: 5px;
+            padding: 8px 15px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .action-buttons button:hover {
+            background-color: #45a049;
+        }
+        /*.add-button {*/
+        /*//margin-top: 5px;*/
+        /*//margin-bottom: 10px;*/
+        /*  background-color: #45a049;*/
+        /*}*/
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px; /* 增加内边距 */
+            margin-left: 650px;
+            border: 1px solid #888;
+            margin-top: 10px;
+            width: 30%;
+            height: 50%; /* Could be more or less, depending on screen size */
+            z-index: 9999;
+        }
+        .add-marker-btn {
+            position: absolute;
+            top: 50px; /* 调整按钮距离顶部的距离 */
+            right: 10px; /* 调整按钮距离右侧的距离 */
+            width: 30px; /* 按钮宽度 */
+            height: 30px; /* 按钮高度 */
+            border-radius: 50%; /* 变成圆形 */
+            background-color: mediumpurple; /* 紫色背景 */
+            z-index: 999; /* 确保按钮位于地图之上 */
+            color: white; /* 文本颜色 */
+            font-size: 20px; /* 文本大小 */
+            border: none; /* 移除按钮边框 */
+            cursor: pointer; /* 鼠标指针形状 */
+        }
+        .add-marker-btn1 {
+            position: absolute;
+            top: 100px; /* 调整按钮距离顶部的距离 */
+            right: 10px; /* 调整按钮距离右侧的距离 */
+            width: 30px; /* 按钮宽度 */
+            height: 30px; /* 按钮高度 */
+            border-radius: 50%; /* 变成圆形 */
+            background-color: mediumpurple; /* 紫色背景 */
+            z-index: 999; /* 确保按钮位于地图之上 */
+            color: white; /* 文本颜色 */
+            font-size: 20px; /* 文本大小 */
+            border: none; /* 移除按钮边框 */
+            cursor: pointer; /* 鼠标指针形状 */
+        }
+        /*.chart-container {*/
+        /*    width: 400px; !* 图表容器宽度 *!*/
+        /*    height: 300px; !* 图表容器高度 *!*/
+        /*    position: absolute;*/
+        /*    top: 100px; !* 图表容器距离顶部的距离 *!*/
+        /*    right: 10px; !* 图表容器距离右侧的距离 *!*/
+        /*    border: 1px solid #ccc; !* 图表容器边框 *!*/
+        /*}*/
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/css/ol.css">
+    <script src="https://cdn.jsdelivr.net/npm/ol-layerswitcher@3.3.1/dist/ol-layerswitcher.js"></script>
+    <!-- 引入 OpenLayers 库 -->
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
+    <!-- 引入 ol-layerswitcher 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/ol-layerswitcher@3.3.1/dist/ol-layerswitcher.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol-layerswitcher@3.3.1/dist/ol-layerswitcher.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@6.9.0/dist/ol.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=QzL7Q1ss7GlBZvIeXoIsvL4DbjGDUSNO"></script>
+
+
+</head>
+
+<body>
+<button id="add-marker-btn" class="add-marker-btn">+</button>
+
+<button id="add-marker-btn1" class="add-marker-btn1">显示饼图</button>
+<div id="pie-chart-container"  style="display: none;"></div>
+
+
+<div class="container">
+    <div id="map"></div>
+    <div id="infoBox"></div>
+</div>
+<div class="table-content">
+    <table id="data-table">
+        <thead>
+        <tr>
+            <th>社区名</th>
+            <th>经度</th>
+            <th>纬度</th>
+            <th>操作</th> <!-- 新添加的列 -->
+        </tr>
+        </thead>
+        <tbody id="data-table-body">
+        </tbody>
+    </table>
+<!--        <button class="add-button" id="add-button">增加小区</button> &lt;!&ndash; 新增加的按钮 &ndash;&gt;-->
+<!--        <div style="margin-bottom: 10px;margin-top: 10px">图层切换：-->
+<!--            <select id="layerSelect" onchange="changeLayer()">-->
+<!--                <option value="">选择图层</option>-->
+<!--            </select>-->
+<!--        </div>-->
+
+        <!-- <div id="layerSwitcher" class="ol-control"></div> -->
+
+<!--        传送目的地：<input type="text" id="location-input" placeholder="输入目的地">-->
+<!--        &lt;!&ndash; Button to trigger geolocation &ndash;&gt;-->
+<!--        <button onclick="flyToDestination()" style="margin-bottom: 5px" class="chuansong">传送</button>-->
+<!--        <h4>点击地图两个点测量距离：</h4>-->
+<!--        <div id="distance-info" class="distance-info" s></div>-->
+
+    <div class="pagination">
+        <button id="prev-page">Previous</button>
+        <span>Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
+        <button id="next-page">&nbsp &nbsp Next &nbsp &nbsp</button>
+        <span> <select id="items-per-page">
+        <option value="5" selected>5</option>
+        <option value="8" >8</option>
+    </select> </span>
+    </div>
+</div>
+<!--<div class="pagination">-->
+<!--    <button id="prev-page">Previous</button>-->
+<!--    <span>Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>-->
+<!--    <button id="next-page">&nbsp &nbsp Next &nbsp &nbsp</button>-->
+<!--    <span>Show <select id="items-per-page">-->
+<!--        <option value="5">5</option>-->
+<!--        <option value="10" selected>10</option>-->
+<!--    </select> items per page</span>-->
+<!--</div>-->
+
+<!-- The Modal -->
+<div id="editModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>编辑位置信息</h2>
+        <form id="editForm">
+            <div style="margin-bottom: 50px">
+                <label for="editCommunity">社区名:</label>
+                <input type="text" id="editCommunity" name="editCommunity">
+            </div>
+            <div style="margin-bottom: 50px">
+                <label for="editLongitude">经度:</label>
+                <input type="text" id="editLongitude" name="editLongitude">
+            </div>
+            <div style="margin-bottom: 50px">
+                <label for="editLatitude">纬度:</label>
+                <input type="text" id="editLatitude" name="editLatitude">
+            </div>
+            <button type="submit" class="chuansong">保存</button>
+        </form>
+    </div>
+
+</div>
+
+<!-- The Modal for adding new location -->
+<div id="addModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>增加新的小区信息</h2>
+        <form id="addForm">
+            <div style="margin-bottom: 50px">
+                <label for="addCommunity">社区名:</label>
+                <input type="text" id="addCommunity" name="addCommunity">
+            </div>
+            <div style="margin-bottom: 50px">
+                <label for="addLongitude">经度:</label>
+                <input type="text" id="addLongitude" name="addLongitude">
+            </div >
+            <div style="margin-bottom: 50px">
+                <label for="addLatitude">纬度:</label>
+                <input type="text" id="addLatitude" name="addLatitude">
+            </div>
+            <button type="submit" class="chuansong">保存</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ol@6.9.0/dist/ol.js"></script>
+<script type="text/javascript">
+  var tianditu_token = '76d3f7cf5446ca392ecde77bf851e00e'; // 填入您的token
+  var locations = []; // To store all locations data
+  var currentPage = 1;
+  var distance;
+  var itemsPerPage = 5;
+  var selectedFeature = null;
+  var originalStyle = null;
+  var editedLocationId = null;
+  var featureArray = [];
+  var locationInput="武汉";
+  var src_loc='http://39.101.71.83';
+  // var src_loc='http://localhost';
+
+  // 创建一个单一的图层组合天地图矢量图层和注记图层，因为这两个地图层分开显示没有必要
+  var tiandituLayer = new ol.layer.Group({
+    title: "天地图",
+    layers: [
+      new ol.layer.Tile({
+        title: "天地图矢量图层",
+        source: new ol.source.XYZ({
+          url: "http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+          wrapX: false
+        })
+      }),
+      new ol.layer.Tile({
+        title: "天地图矢量注记图层",
+        source: new ol.source.XYZ({
+          url: "http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+          wrapX: false
+        })
+      })
+    ]
+  });
+
+  //地图图层绘制
+  var map = new ol.Map({
+    target:'map',
+    layers:[
+      new ol.layer.Tile({
+        title: "天地图矢量图层",
+        source: new ol.source.XYZ({
+          url: "http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+          wrapX: false
+        })
+      }),
+      new ol.layer.Tile({
+        title: "天地图矢量注记图层",
+        source: new ol.source.XYZ({
+          url: "http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+          wrapX: false
+        })
+      }),
+      // tiandituLayer,
+      new ol.layer.Tile({
+        title: "天地图卫星图层",
+        source: new ol.source.XYZ({
+          url: "http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+          wrapX: false
+        })
+      }),
+      new ol.layer.Tile({
+        title: "街道图层",
+        source: new ol.source.OSM()
+      }),
+      new ol.layer.Tile({
+        title: "Bing卫星图层",
+        source: new ol.source.BingMaps({
+          key: 'AuyckHLenczLROqmFJEo21sIFL8UxWiJUZylaEDWh9oA4-wjc_Qg1veJ0y5tcezn',
+          imagerySet: 'AerialWithLabels'
+        })
+      })
+    ],
+    view: new ol.View({
+      projection: 'EPSG:3857',
+      center: [12718773.43,3570249.00],
+      zoom: 12,
+    })
+  });
+
+  var overviewLayers = [
+    new ol.layer.Tile({
+      title: "天地图矢量图层",
+      source: new ol.source.XYZ({
+        url: "http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+        wrapX: false
+      })
+    }),
+    new ol.layer.Tile({
+      title: "天地图矢量注记图层",
+      source: new ol.source.XYZ({
+        url: "http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+        wrapX: false
+      })
+    }),
+    // tiandituLayer,
+    new ol.layer.Tile({
+      title: "天地图卫星图层",
+      source: new ol.source.XYZ({
+        url: "http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+        wrapX: false
+      })
+    }),
+    new ol.layer.Tile({
+      title: "街道图层",
+      source: new ol.source.OSM()
+    }),
+    new ol.layer.Tile({
+      title: "Bing卫星图层",
+      source: new ol.source.BingMaps({
+        key: 'AuyckHLenczLROqmFJEo21sIFL8UxWiJUZylaEDWh9oA4-wjc_Qg1veJ0y5tcezn',
+        imagerySet: 'AerialWithLabels'
+      })
+    })
+  ];
+
+  var overmapLayers = [
+    new ol.layer.Tile({
+      title: "天地图矢量图层",
+      source: new ol.source.XYZ({
+        url: "http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+        wrapX: false
+      })
+    }),
+    new ol.layer.Tile({
+      title: "天地图矢量注记图层",
+      source: new ol.source.XYZ({
+        url: "http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+        wrapX: false
+      })
+    }),
+    // tiandituLayer,
+    new ol.layer.Tile({
+      title: "天地图卫星图层",
+      source: new ol.source.XYZ({
+        url: "http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+        wrapX: false
+      })
+    }),
+    new ol.layer.Tile({
+      title: "街道图层",
+      source: new ol.source.OSM()
+    }),
+    new ol.layer.Tile({
+      title: "Bing卫星图层",
+      source: new ol.source.BingMaps({
+        key: 'AuyckHLenczLROqmFJEo21sIFL8UxWiJUZylaEDWh9oA4-wjc_Qg1veJ0y5tcezn',
+        imagerySet: 'AerialWithLabels'
+      })
+    })
+  ];
+
+  var overviewMapControl = new ol.control.OverviewMap({
+    // 设置缩略图的图层
+    // layers: [
+    //   new ol.layer.Tile({
+    //     source: new ol.source.OSM() // 这里可以使用其他图层
+    //   })
+    // ],
+    layers:overviewLayers,
+    // 设置缩略图的位置
+    collapsed: false
+  });
+  map.addControl(overviewMapControl);
+
+
+  var overviewMap = new ol.control.OverviewMap({
+    layers:overmapLayers,
+    // 设置鹰眼的位置和大小
+    view: new ol.View({
+      center: [0, 0],
+      zoom: 0
+    })
+  });
+
+  map.addControl(overviewMap);
+
+  // 添加全屏控件
+  var fullScreenControl = new ol.control.FullScreen();
+  map.addControl(fullScreenControl);
+  // Flight animation function
+  var startPoint = null;
+  var endPoint = null;
+  var lineFeature = null;
+  var planeFeature = null;
+  var flySpeed = 0.1;
+  function addPoint(coordinate, isStartPoint) {
+    var pointStyle = new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 6,
+        fill: new ol.style.Fill({
+          color: isStartPoint ? 'green' : 'red'
+        }),
+        stroke: new ol.style.Stroke({
+          color: 'white',
+          width: 2
+        })
+      })
+    });
+
+    var point = new ol.Feature({
+      geometry: new ol.geom.Point(coordinate)
+    });
+    point.setStyle(pointStyle);
+
+    var vectorSource = new ol.source.Vector({
+      features: [point]
+    });
+
+    var vectorLayer = new ol.layer.Vector({
+      source: vectorSource
+    });
+
+    map.addLayer(vectorLayer);
+
+    return point;
+  }
+  var addMarkerBtn = document.getElementById('add-marker-btn');
+  // 获取表格内容元素
+  var tableContent = document.querySelector('.table-content');
+
+  // 添加点击事件处理程序
+  addMarkerBtn.addEventListener('click', function() {
+      // 切换表格的显示状态
+      if (tableContent.style.display === 'none') {
+          tableContent.style.display = 'block';
+          addMarkerBtn.textContent = '-'; // 当表格显示时，按钮文本变成减号
+      } else {
+          tableContent.style.display = 'none';
+          addMarkerBtn.textContent = '+'; // 当表格隐藏时，按钮文本变成加号
+      }
+  });
+  // var addMarkerBtn1 = document.getElementById('add-marker-btn1');
+  // var pieChartContainer = document.getElementById('pie-chart-container');
+  //
+  // // 添加点击事件处理程序
+  // addMarkerBtn1.addEventListener('click', function() {
+  //     // 切换饼图容器的显示状态
+  //     if (pieChartContainer.style.display === 'none') {
+  //         pieChartContainer.style.display = 'block';
+  //         addMarkerBtn1.textContent = '隐藏饼图'; // 按钮文本改为“隐藏饼图”
+  //         // 初始化并显示饼图
+  //         showPieChart();
+  //     } else {
+  //         pieChartContainer.style.display = 'none';
+  //         addMarkerBtn1.textContent = '显示饼图'; // 按钮文本改为“显示饼图”
+  //     }
+  // });
+  //
+  // function showPieChart() {
+  //     // 生成示例数据
+  //     var pieData = [
+  //         { label: '直接访问', value: 335, color: 'red' },
+  //         { label: '邮件营销', value: 310, color: 'green' },
+  //         { label: '联盟广告', value: 234, color: 'blue' },
+  //         { label: '视频广告', value: 135, color: 'orange' },
+  //         { label: '搜索引擎', value: 1548, color: 'purple' }
+  //     ];
+  //
+  //     // 创建 SVG 元素
+  //     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  //     svg.setAttribute("width", "400");
+  //     svg.setAttribute("height", "400");
+  //
+  //     // 计算总值
+  //     var total = pieData.reduce(function(acc, cur) {
+  //         return acc + cur.value;
+  //     }, 0);
+  //
+  //     // 绘制饼图
+  //     var startAngle = 0;
+  //     pieData.forEach(function(data) {
+  //         var angle = (data.value / total) * 360;
+  //         var endAngle = startAngle + angle;
+  //
+  //         // 计算圆弧的路径
+  //         var startX = 200 + Math.cos(startAngle * Math.PI / 180) * 100;
+  //         var startY = 200 + Math.sin(startAngle * Math.PI / 180) * 100;
+  //         var endX = 200 + Math.cos(endAngle * Math.PI / 180) * 100;
+  //         var endY = 200 + Math.sin(endAngle * Math.PI / 180) * 100;
+  //         var largeArcFlag = angle > 180 ? 1 : 0;
+  //
+  //         // 创建路径元素
+  //         var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  //         path.setAttribute("d", `M200,200 L${startX},${startY} A100,100 0 ${largeArcFlag},1 ${endX},${endY} Z`);
+  //         path.setAttribute("fill", data.color);
+  //         svg.appendChild(path);
+  //
+  //         // 更新起始角度
+  //         startAngle = endAngle;
+  //     });
+  //
+  //     // 将 SVG 元素添加到容器中
+  //     pieChartContainer.innerHTML = '';
+  //     pieChartContainer.appendChild(svg);
+  // }
+
+  function drawFlightRoute() {
+    var lineStyle = new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'blue',
+        width: 2
+      })
+    });
+
+    var line = new ol.geom.LineString([startPoint.getGeometry().getCoordinates(), endPoint.getGeometry().getCoordinates()]);
+    lineFeature = new ol.Feature({
+      geometry: line
+    });
+    lineFeature.setStyle(lineStyle);
+
+    var vectorSource = new ol.source.Vector({
+      features: [lineFeature]
+    });
+
+    var vectorLayer = new ol.layer.Vector({
+      source: vectorSource
+    });
+
+    map.addLayer(vectorLayer);
+  }
+
+  function animatePlane() {
+    var planeStyle = new ol.style.Style({
+      image: new ol.style.Icon({
+        anchor: [0.5, 0.5],
+        src: 'https://zzh-1318584129.cos.ap-nanjing.myqcloud.com/plane.png',
+        scale: 0.05,
+        rotateWithView: true
+      })
+    });
+
+    var lineCoordinates = lineFeature.getGeometry().getCoordinates();
+    var pathLength = new ol.geom.LineString(lineCoordinates).getLength();
+    distance = new ol.geom.LineString([startPoint.getGeometry().getCoordinates(), endPoint.getGeometry().getCoordinates()]).getLength();
+    // document.getElementById('distance-info').innerHTML = "飞行距离: " + distance.toFixed(2) + " 米";
+    var planeCoord = lineCoordinates[0];
+    var i = 0;
+
+    function animate() {
+      if (i < pathLength) {
+        planeCoord = new ol.geom.LineString(lineCoordinates).getCoordinateAt(i / pathLength);
+        planeFeature.setGeometry(new ol.geom.Point(planeCoord));
+        i += 100;
+        requestAnimationFrame(animate);
+      }
+    }
+
+    planeFeature = new ol.Feature({
+      geometry: new ol.geom.Point(planeCoord)
+    });
+    planeFeature.setStyle(planeStyle);
+
+    var vectorSource = new ol.source.Vector({
+      features: [planeFeature]
+    });
+
+    var vectorLayer = new ol.layer.Vector({
+      source: vectorSource
+    });
+
+    map.addLayer(vectorLayer);
+
+    animate();
+  }
+
+  function clearFlight() {
+    if (lineFeature) {
+      map.removeLayer(lineFeature);
+      lineFeature = null;
+    }
+    if (planeFeature) {
+      map.removeLayer(planeFeature);
+      planeFeature = null;
+    }
+    startPoint = null;
+    endPoint = null;
+  }
+
+  // 在地图上点击事件监听器
+  map.on('click', function(event) {
+    var clickedCoordinate = event.coordinate;
+    if (!startPoint) {
+      // 如果起点为空，则将点击的坐标作为起点
+      startPoint = addPoint(clickedCoordinate, true);
+    } else if (!endPoint) {
+      // 如果终点为空，则将点击的坐标作为终点，并绘制飞行路线，然后开始飞行动画
+      endPoint = addPoint(clickedCoordinate, false);
+      drawFlightRoute();
+      animatePlane();
+    } else {
+      // 如果起点和终点都已设置，则清除上一次的飞行信息，并重新设置新的起点
+      clearFlight();
+      startPoint = addPoint(clickedCoordinate, true);
+    }
+  });
+
+  function flyToDestination() {
+    locationInput = document.getElementById('location-input').value;
+    var geocoder = new BMap.Geocoder();
+    geocoder.getPoint(locationInput, function(point) {
+      if (point) {
+        var coordinates = ol.proj.fromLonLat([point.lng, point.lat]);
+        // displayLocation(coordinates);
+        console.log(coordinates);
+        var duration = 2000;
+        map.getView().animate({
+          center: coordinates,
+          duration: duration
+        });
+      } else {
+        console.error('Geocode was not successful.');
+      }
+    }, '武汉市'); // 这里可以设置默认城市
+  }
+
+  map.addControl(overviewMap);
+  //******************************
+
+  // 使用AJAX请求后端数据，得到所有点的信息
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', src_loc+':9090//location/getAllLocations', true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      var response = JSON.parse(xhr.responseText);
+      if (Array.isArray(response.data)) {
+        locations = response.data;
+        drawPoints(locations);
+        renderPage(currentPage);
+      } else {
+        console.error("Locations data is not an array:", response);
+      }
+    }
+  };
+
+  xhr.send();
+
+  /**
+   * 根据后端数据在地图上打点
+   * @param locations 后端返回的位置信息数组
+   */
+  //绘制所有点函数
+  function drawPoints(locations) {
+    // Clear existing layers
+    map.getLayers().forEach(function(layer) {
+      if (layer instanceof ol.layer.Vector) {
+        map.removeLayer(layer);
+      }
+    });
+
+    locations.forEach(function(location) {
+      var lonLat = ol.proj.transform([location.longitude, location.latitude], 'EPSG:4326', 'EPSG:3857');
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Point(lonLat),
+        // 在 feature 中添加属性，存储经纬度信息
+        longitude: location.longitude,
+        latitude: location.latitude
+      });
+
+      style = new ol.style.Style({
+        image: new ol.style.Icon({
+          scale: 0.15,
+          src: 'https://zzh-1318584129.cos.ap-nanjing.myqcloud.com/%E5%AE%9A%E4%BD%8D.png',
+          anchor: [0.48, 0.52]
+        }),
+        text: new ol.style.Text({
+          font: 'normal 12px 黑体',
+          textAlign: 'center',
+          textBaseline: 'middle',
+          offsetY: -35,
+          offsetX: 0,
+          backgroundFill: new ol.style.Stroke({
+            color: 'rgba(0,0,255,0.7)',
+          }),
+          fill: new ol.style.Fill({
+            color: 'rgba(236,218,20,1)'
+          }),
+          padding: [5, 5, 5, 5],
+          text: location.community,
+        })
+      });
+
+      feature.setStyle(style);
+      map.addLayer(new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [feature]
+        })
+      }));
+      featureArray.push(feature);
+    });
+
+    // 监听地图上的鼠标移动事件
+    map.on('pointermove', function(event) {
+      // 获取鼠标位置下的要素
+      var feature = map.forEachFeatureAtPixel(event.pixel, function(feature) {
+        return feature;
+      });
+
+      // 如果存在要素，则显示该要素的经纬度信息
+      if (feature) {
+        // 从 feature 的属性中获取经纬度信息
+        var longitude = feature.get('longitude');
+        // var community = feature.get('community');
+        var latitude = feature.get('latitude');
+        // console.log(feature);
+        // 在这里你可以自定义展示经纬度信息的样式和格式
+        var infoBox = document.getElementById('infoBox');
+        infoBox.innerHTML = '<br><b>经度:</b> ' + longitude.toFixed(6) + '<br><b>纬度:</b> ' + latitude.toFixed(6)+'<br><b>地点介绍:</b>';
+        infoBox.style.display = 'block';
+        infoBox.style.left = (event.pixel[0] + 10) + 'px'; // 设置信息框相对于鼠标的位置偏移
+        infoBox.style.top = (event.pixel[1] - 20) + 'px'; // 设置信息框相对于鼠标的位置偏移
+
+      } else {
+        // 如果不存在要素，则隐藏信息框
+        var infoBox = document.getElementById('infoBox');
+        infoBox.style.display = 'none';
+      }
+    });
+  }
+
+  function zzh(locateButton)
+  {
+    locateButton.style.border = 'none'; // 设置按钮边框样式
+    locateButton.style.color = 'white'; // 设置按钮文字颜色
+    locateButton.style.padding = '5px 10px'; // 设置按钮内边距
+    locateButton.style.textAlign = 'center'; // 设置按钮文字居中
+    locateButton.style.textDecoration = 'none'; // 设置文字无下划线
+    locateButton.style.display = 'inline-block'; // 设置按钮显示为行内块元素
+    locateButton.style.fontSize = '16px'; // 设置文字大小
+    locateButton.style.margin = '4px 2px'; // 设置按钮外边距
+    locateButton.style.cursor = 'pointer'; // 设置鼠标样式为手型
+    locateButton.style.borderRadius = '10px'; // 设置按钮圆角
+    locateButton.style.transitionDuration = '0.4s'; // 设置过渡动画时长
+    locateButton.style.marginRight = '10px';
+    return locateButton;
+  }
+  /**
+   * Render current page of data in the table
+   * @param page Page number to render
+   */
+  //页面刷新函数
+  function renderPage(page) {
+    var startIndex = (page - 1) * itemsPerPage;
+    var endIndex = startIndex + itemsPerPage;
+    var totalPages = Math.ceil(locations.length / itemsPerPage);
+    var dataToShow = locations.slice(startIndex, endIndex);
+
+    // Clear table body
+    var tableBody = document.getElementById('data-table-body');
+    tableBody.innerHTML = '';
+
+    // Populate table with data
+    dataToShow.forEach(function(location) {
+      var row = document.createElement('tr');
+      var communityCell = document.createElement('td');
+      communityCell.textContent = location.community;
+      row.appendChild(communityCell);
+      var longitudeCell = document.createElement('td');
+      longitudeCell.textContent = location.longitude;
+      row.appendChild(longitudeCell);
+      var latitudeCell = document.createElement('td');
+      latitudeCell.textContent = location.latitude;
+      row.appendChild(latitudeCell);
+
+      // Adding action buttons
+      var actionCell = document.createElement('td');
+      var locateButton = document.createElement('button');
+      locateButton.textContent = '定位'; // 设置按钮文本内容
+      locateButton.style.backgroundColor = 'blue'; // 设置按钮背景颜色
+      zzh(locateButton)
+
+
+      locateButton.addEventListener('click', function() {
+        // Write your code to center the map to this location
+        var lonLat = ol.proj.transform([parseFloat(longitudeCell.textContent), parseFloat(latitudeCell.textContent)], 'EPSG:4326', 'EPSG:3857');
+        map.getView().setCenter(lonLat);
+        var lon = parseFloat(longitudeCell.textContent);
+        var lat = parseFloat(latitudeCell.textContent);
+        if (selectedFeature !== null) {
+          selectedFeature.setStyle(originalStyle);
+        }
+
+        // 遍历 featureArray，找到对应的特征对象并更改其图标样式
+        for (var i = 0; i < featureArray.length; i++) {
+          var feature = featureArray[i];
+          // 判断特征对象的经纬度是否与当前位置匹配
+          if (feature.get('longitude') === lon && feature.get('latitude') === lat) {
+            // 保存当前选中的特征对象和样式
+            selectedFeature = feature;
+            originalStyle = feature.getStyle();
+
+            // 创建新的样式对象
+            var newStyle = new ol.style.Style({
+              image: new ol.style.Icon({
+                scale: 0.16,
+                src: 'https://zzh-1318584129.cos.ap-nanjing.myqcloud.com/ding.png',
+                anchor: [0.48, 0.52]
+              }),
+              text: feature.getStyle().getText() // 保持文本样式不变
+            });
+            // 设置新的样式对象到特征对象
+            feature.setStyle(newStyle);
+
+            // 停止循环，因为已经找到了匹配的特征对象
+            break;
+          }
+        }
+      });
+
+      actionCell.appendChild(locateButton);
+
+      var editButton = document.createElement('button');
+      editButton.textContent = '编辑'; // 设置按钮文本内容
+      editButton.style.backgroundColor = 'orange'; // 设置按钮背景颜色
+      zzh(editButton)
+      editButton.addEventListener('click', function() {
+        // Open modal for editing this location
+        openEditModal(location);
+      });
+      actionCell.appendChild(editButton);
+
+      var deleteButton = document.createElement('button');
+      deleteButton.textContent = '删除';
+      deleteButton.style.backgroundColor = 'red'; // 设置按钮背景颜色
+      zzh(deleteButton)
+      deleteButton.addEventListener('click', function() {
+        // Write your code to delete this location and refresh the page
+        // var index = locations.indexOf(location);
+        // if (index !== -1) {
+        //     locations.splice(index, 1);
+        //     renderPage(currentPage);
+        // }
+        // Write your code to delete this location and refresh the page
+        // 获取当前行的社区名信息
+        var communityName = communityCell.textContent;
+
+        // 在这里编写删除操作的代码，例如使用AJAX请求将该位置从数据库中删除
+        // 删除完成后，更新locations数组，将该位置从数组中移除
+        // 最后调用renderPage(currentPage)刷新页面
+        // 例如，可以弹出一个确认框来确认删除操作
+        var confirmDelete = confirm("确认删除该位置信息吗？");
+        if (confirmDelete) {
+          // 从前端移除该行数据
+          var tableRow = row.parentNode;
+          tableRow.removeChild(row);
+
+          // 从 locations 数组中移除对应的数据
+          var index = locations.findIndex(function(location) {
+            return location.community === communityName;
+          });
+          if (index !== -1) {
+            locations.splice(index, 1);
+            // 可以在这里进行 AJAX 请求，将删除操作发送到后端
+            // 删除完成后，可以刷新页面或其他操作
+            // 向后端发送删除请求
+            deleteLocation(communityName);
+          }
+        }
+
+      });
+      actionCell.appendChild(deleteButton);
+
+      row.appendChild(actionCell);
+
+      tableBody.appendChild(row);
+    });
+
+    // Update pagination controls
+    var currentPageElement = document.getElementById('current-page');
+    currentPageElement.textContent = page;
+    var totalPageElement = document.getElementById('total-pages');
+    totalPageElement.textContent = totalPages;
+
+    // Enable/disable previous and next buttons based on current page
+    var prevButton = document.getElementById('prev-page');
+    var nextButton = document.getElementById('next-page');
+    prevButton.disabled = page === 1;
+    nextButton.disabled = page === totalPages;
+  }
+
+  // Function to open the edit modal with location data
+  function openEditModal(location) {
+    // Fill form fields with location data
+    document.getElementById('editCommunity').value = location.community;
+    document.getElementById('editLongitude').value = location.longitude;
+    document.getElementById('editLatitude').value = location.latitude;
+
+    // Show modal
+    var modal = document.getElementById('editModal');
+    modal.style.display = 'block';
+
+    // Set the location id to use for updating
+    editedLocationId = location.id;
+  }
+
+  //点击新增按钮，弹出弹窗
+  // var addBtn = document.getElementById('add-button');
+  // addBtn.addEventListener('click', function() {
+  //   var modal = document.getElementById('addModal');
+  //   modal.style.display = 'block';
+  //
+  // });
+
+  //点击新增弹窗右上角“×”，关闭弹窗
+  var addModal = document.getElementById('addModal'); // 获取新增模态框
+  var addCloseBtn = addModal.getElementsByClassName('close')[0]; // 获取新增模态框中的关闭按钮
+  addCloseBtn.onclick = function() {
+    addModal.style.display = 'none'; // 点击关闭按钮时，隐藏新增模态框
+  };
+
+  // 点击编辑弹窗右上角“×”，关闭弹窗
+  var modal = document.getElementById('editModal');
+  var span = document.getElementsByClassName('close')[0];
+  span.onclick = function() {
+    modal.style.display = 'none';
+  };
+
+  //点击新增或编辑弹窗区域外，关闭弹窗
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = 'none';//关闭编辑弹窗
+
+    }
+    // if(event.target==addModal)
+    // {
+    //   addModal.style.display = 'none';//关闭新增弹窗
+    // }
+  };
+
+  //处理更新信息的弹窗
+  document.getElementById('editForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent form submission
+
+    // Get updated location data from form
+    var updatedCommunity = document.getElementById('editCommunity').value;
+    var updatedLongitude = document.getElementById('editLongitude').value;
+    var updatedLatitude = document.getElementById('editLatitude').value;
+
+    // Create data object to send via AJAX
+    var data = {
+      id: editedLocationId,
+      community: updatedCommunity,
+      longitude: updatedLongitude,
+      latitude: updatedLatitude
+    };
+    updateLocation(data);
+  });
+
+  //编辑信息函数，与后端交互
+  function updateLocation(data)
+  {
+    // Send AJAX request to update location
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', src_loc + ':9090/location/updateLocation', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          console.log("位置信息更新成功");
+          // Close the modal
+          modal.style.display = 'none';
+          console.log("xiao->");
+          var updatedLocationIndex = locations.findIndex(function(loc) {
+            return loc.id === data.id;
+          });
+          if (updatedLocationIndex !== -1) {
+            // Update the location object with new data
+            locations[updatedLocationIndex].community = data.community;
+            locations[updatedLocationIndex].longitude = data.longitude;
+            locations[updatedLocationIndex].latitude = data.latitude;
+          }
+          // Refresh the page
+          renderPage(currentPage);
+          // Redraw points on the map
+          drawPoints(locations);
+          // Center map to updated location
+          var updatedLocation = locations.find(function(loc) {
+            return loc.id === data.id;
+          });
+          if (updatedLocation) {
+            var lonLat = ol.proj.transform([updatedLocation.longitude, updatedLocation.latitude], 'EPSG:4326', 'EPSG:3857');
+            map.getView().setCenter(lonLat);
+          }
+        } else {
+          console.error("位置信息更新失败:", xhr.statusText);
+        }
+      }
+    };
+    xhr.send(JSON.stringify(data));
+  }
+
+  //处理新增小区弹窗的提交
+  // document.getElementById('addForm').addEventListener('submit', function(event) {
+  //   event.preventDefault();
+  //   var addCommunity = document.getElementById('addCommunity').value;
+  //   var addLongitude = document.getElementById('addLongitude').value;
+  //   var addLatitude = document.getElementById('addLatitude').value;
+  //   var newLocation = {
+  //     community: addCommunity,
+  //     longitude: addLongitude,
+  //     latitude: addLatitude
+  //   };
+  //   addNewLocation(newLocation);
+  //   var modal = document.getElementById('addModal');
+  //   modal.style.display = 'none';
+  // });
+
+  //新增小区信息，与后端交互
+  function addNewLocation(location) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', src_loc+':9090//location/addLocation', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        console.log("小区增加成功");
+        console.log("jjj");
+        locations.push(location);
+        drawPoints(locations);
+        renderPage(currentPage);
+        var lonLat = ol.proj.transform([location.longitude, location.latitude], 'EPSG:4326', 'EPSG:3857');
+        map.getView().setCenter(lonLat);
+      }
+      else {
+        console.error("Error adding location:", response);
+      }
+    };
+    xhr.send(JSON.stringify(location));
+  }
+
+  // 删除位置信息从后端
+  function deleteLocation(communityName) {
+    console.log('Deleting location:', communityName);
+    var xhr = new XMLHttpRequest();
+    console.log('XHR object:', xhr);
+    // var xhr = new XMLHttpRequest();
+    xhr.open('POST', src_loc+':9090/location/deleteLocation', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          console.log("位置信息删除成功");
+          // 刷新页面**********
+          renderPage(currentPage);
+          // 重新绘制地图上的点标记
+          var xhrGetLocations = new XMLHttpRequest();
+          xhrGetLocations.open('GET', src_loc+':9090//location/getAllLocations', true);
+          xhrGetLocations.onreadystatechange = function() {
+            if (xhrGetLocations.readyState === 4 && xhrGetLocations.status === 200) {
+              var response = JSON.parse(xhrGetLocations.responseText);
+              if (Array.isArray(response.data)) {
+                locations = response.data;
+                drawPoints(locations);
+                renderPage(currentPage);
+              } else {
+                console.error("Locations data is not an array:", response);
+              }
+            }
+          };
+
+          xhrGetLocations.send();
+
+          drawPoints(locations);
+          // // 设置地图中心为更新后的位置
+          var updatedLocation = locations.find(function(location) {
+            return location.community === newCommunityName;
+          });
+          if (updatedLocation) {
+            var lonLat = ol.proj.transform([updatedLocation.longitude, updatedLocation.latitude], 'EPSG:4326', 'EPSG:3857');
+            map.getView().setCenter(lonLat);
+          }
+        } else {
+          console.error("位置信息删除失败:", xhr.statusText);
+        }
+      }
+    };
+    var data = 'community=' + encodeURIComponent(communityName);
+    xhr.send(data);
+  }
+
+  // var layerSelect = document.getElementById('layerSelect');
+  // var layers = map.getLayers().getArray();
+  // for (var i = 0; i < layers.length; i++) {
+  //   var layer = layers[i];
+  //   var option = document.createElement('option');
+  //   option.value = layer.get('title');
+  //   option.text = layer.get('title');
+  //   layerSelect.appendChild(option);
+  // }
+  //改变地图图层
+  function changeLayer() {
+    var selectedLayer = layerSelect.value;
+    var layers = map.getLayers().getArray();
+    for (var i = 0; i < layers.length; i++) {
+      var layer = layers[i];
+      if (layer.get('title') === selectedLayer) {
+        layer.setVisible(true);
+      } else {
+        layer.setVisible(false);
+      }
+      drawPoints(locations);
+    }
+  }
+
+  // layerSelect.addEventListener('change', function() {
+  //   var selectedLayer = layerSelect.value;
+  //   var overviewLayers = overviewMapControl.getOverviewMap().getLayers().getArray();
+  //   for (var i = 0; i < overviewLayers.length; i++) {
+  //     var layer = overviewLayers[i];
+  //     if (layer.get('title') === selectedLayer) {
+  //       layer.setVisible(true);
+  //     } else {
+  //       layer.setVisible(false);
+  //     }
+  //   }
+  //
+  //   var overmapLayers = overviewMap.getOverviewMap().getLayers().getArray();
+  //   for (var i = 0; i < overmapLayers.length; i++) {
+  //     var layer = overmapLayers[i];
+  //     if (layer.get('title') === selectedLayer) {
+  //       layer.setVisible(true);
+  //     } else {
+  //       layer.setVisible(false);
+  //     }
+  //   }
+  // });
+
+  // Pagination event listeners
+  document.getElementById('prev-page').addEventListener('click', function() {
+    if (currentPage > 1) {
+      currentPage--;
+      renderPage(currentPage);
+    }
+  });
+
+  document.getElementById('next-page').addEventListener('click', function() {
+    if (currentPage < Math.ceil(locations.length / itemsPerPage)) {
+      currentPage++;
+      renderPage(currentPage);
+    }
+  });
+
+  document.getElementById('items-per-page').addEventListener('change', function() {
+    itemsPerPage = parseInt(this.value);
+    currentPage = 1;
+    renderPage(currentPage);
+  });
+</script>
+
+</body>
+</html>
