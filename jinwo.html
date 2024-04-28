@@ -347,9 +347,9 @@
 <body>
 <button id="add-marker-btn" class="add-marker-btn">+</button>
 
-<button id="add-echarts-btn" class="add-echarts-btn">e</button>
+<button id="add-echarts-btn" class="add-echarts-btn">+</button>
 
-<button id="add-re-btn" class="add-re-btn">r</button>
+<button id="add-re-btn" class="add-re-btn">+</button>
 
 <div id="pie-chart-container"  style="display: none;"></div>
 
@@ -692,51 +692,64 @@
 
   //添加热力图显示处理程序。
   var addReBtn=document.getElementById('add-re-btn');
+  var reLayer = null; // 声明一个全局变量来保存 ECharts 图层实例
+  var reLayerVisible = false; // 声明一个变量来跟踪图层的显示状态
   addReBtn.addEventListener('click',function(){
+
     var ROOT_PATH = 'https://echarts.apache.org/examples';
     var option;
 
     $.get(ROOT_PATH + '/data/asset/data/hangzhou-tracks.json', function (data) {
-      var points = [].concat.apply(
-      [],
-      data.map(function (track) {
-        return track.map(function (seg) {
-          return seg.coord.concat([1]);
-        });
-      })
-    );
-    console.log("points->",points);
-    option = {
-      animation: false,
-      bmap: {
-        center: [120.13066322374, 30.240018034923],
-        zoom: 14,
-        roam: true
-      },
-      visualMap: {
-        show: false,
-        top: 'top',
-        min: 0,
-        max: 5,
-        seriesIndex: 0,
-        calculable: true,
-        inRange: {
-          color: ['blue', 'blue', 'green', 'yellow', 'red']
-        }
-      },
-      series: [
+        if(!reLayerVisible) {
+            var points = [].concat.apply(
+                [],
+                data.map(function (track) {
+                    return track.map(function (seg) {
+                        return seg.coord.concat([1]);
+                    });
+                })
+            );
+            console.log("points->", points);
+            option = {
+                animation: false,
+                bmap: {
+                    center: [120.13066322374, 30.240018034923],
+                    zoom: 14,
+                    roam: true
+                },
+                visualMap: {
+                    show: false,
+                    top: 'top',
+                    min: 0,
+                    max: 5,
+                    seriesIndex: 0,
+                    calculable: true,
+                    inRange: {
+                        color: ['blue', 'blue', 'green', 'yellow', 'red']
+                    }
+                },
+                series: [
+                    {
+                        type: 'heatmap',
+                        coordinateSystem: 'bmap',
+                        data: points,
+                        pointSize: 5,
+                        blurSize: 6
+                    }
+                ]
+            };
+            addReBtn.textContent = '-'; // 当表格隐藏时，按钮文本变成加号
+            reLayer = new ol3Echarts(option);
+            reLayer.appendTo(map);
+            reLayerVisible = true; // 设置图层显示状态为 true
+        }else
         {
-          type: 'heatmap',
-          coordinateSystem: 'bmap',
-          data: points,
-          pointSize: 5,
-          blurSize: 6
+            reLayer.remove();
+            reLayerVisible = false; // 设置图层显示状态为 false
+
+            addReBtn.textContent = '+'; // 当表格显示时，按钮文本变成减号
         }
-      ]
-    };
-    const reLayer = new ol3Echarts(option)
-    reLayer.appendTo(map)
-  });
+        });
 });
 
   //添加Echarts图显示处理程序。
