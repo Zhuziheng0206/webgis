@@ -285,6 +285,20 @@
       border: none; /* 移除按钮边框 */
       cursor: pointer; /* 鼠标指针形状 */
     }
+    .data-btn {
+      position: absolute;
+      top: 170px; /* 调整按钮距离顶部的距离 */
+      right: 10px; /* 调整按钮距离右侧的距离 */
+      width: 30px; /* 按钮宽度 */
+      height: 30px; /* 按钮高度 */
+      border-radius: 50%; /* 变成圆形 */
+      background-color: mediumpurple; /* 紫色背景 */
+      z-index: 999; /* 确保按钮位于地图之上 */
+      color: white; /* 文本颜色 */
+      font-size: 20px; /* 文本大小 */
+      border: none; /* 移除按钮边框 */
+      cursor: pointer; /* 鼠标指针形状 */
+    }
     /*.chart-container {*/
     /*    width: 400px; !* 图表容器宽度 *!*/
     /*    height: 300px; !* 图表容器高度 *!*/
@@ -306,6 +320,67 @@
       color: black;
       text-decoration: none;
       cursor: pointer;
+    }
+    /*.container {*/
+    /*  display: flex;*/
+    /*  flex-wrap: wrap;*/
+    /*}*/
+    /* 设置每个图表容器的宽度和间距 */
+    .map-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      height: 600px;
+      z-index: 1;
+    }
+
+    /*#map {*/
+    /* flex:1*/
+    /*  height: 100%;*/
+    /*}*/
+
+    .chart-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 1100px;
+      height: 700px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: white;
+    }
+
+    .container1 {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-container {
+      flex: 1;
+      width: 100%;
+      padding: 10px;
+    }
+    /*#chart1,#chart2 {*/
+    /*  width: calc(50% - 10px); !* 让每个容器占据50%的宽度，减去间距 *!*/
+    /*  margin: 5px; !* 间距为5px *!*/
+    /*}*/
+
+    /*!* 针对chart3的样式 *!*/
+    /*#chart3 {*/
+    /*  width: 100%; !* chart3容器占满一行 *!*/
+    /*}*/
+    #chart1,
+    #chart2,
+    #chart3 {
+      width: 100%;
+      height: 100%;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
@@ -365,64 +440,69 @@
 <button id="add-echarts-btn" class="add-echarts-btn">+</button>
 
 <button id="add-re-btn" class="add-re-btn">+</button>
+<button id="data-btn" class="data-btn">+</button>
 
-<button class="data" onclick="toggle()">h</button>
+<!--<button class="data" onclick="toggle()">h</button>-->
 
-<div id="pie-chart-container"  style="display: none;"></div>
+<!--<div id="pie-chart-container"  style="display: none;"></div>-->
 
 
 <!---->
-<div style="position: relative;left:949px;top: 15px;width: 77px;height: 87px; color:#47d8ff">
-  <tbody>
-  <tr>
-    <td bgcolor="#f8f8e5" style="color: #010d3a">
-      <!--width 滚动条宽度   height 滚动条高度   -->
-      <marquee   width="450"  height="200" direction="down"  hspace="40"  vspace="40" scrollamount="3">滚动文字111111111111111111111111111111111111111111111111111111111111111111111111111 滚动文字滚动文字滚动文字滚动文字滚动文字滚动文字</marquee>
-    </td>
-  </tr>
-  </tbody>
-</div>
+<!--<div style="position: relative;left:949px;top: 15px;width: 77px;height: 87px; color:#47d8ff">-->
+<!--</div>-->
 
-<!--完成任务七天数量div块-->
-<div id="dataAla" class="zzh"></div>
-  <div style="position: relative;left:949px;top: 15px;width: 77px;height: 87px;">
-    <div style="width: 260px">
-      <font style="font-size: 200%;  position: relative;  left: 50px;  top: 175px;color:#47d8ff" >七天完成任务数量</font>
-    </div>
-    <!-- id就是js的getid      var myChart = echarts.init(document.getElementById('main'));-->
-    <div id="main" style="position: absolute;     left: -171px;  top: 180px; width: 676px; height: 360px;  user-select: none;  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);  padding: 0px;   margin: 0px; border-width: 0px;"></div>
-  </div>
+<!--&lt;!&ndash;完成任务七天数量div块&ndash;&gt;-->
+<!--<div id="dataAla" class="zzh"></div>-->
+<!--  <div style="position: relative;left:949px;top: 15px;width: 77px;height: 87px;">-->
+<!--    <div style="width: 260px">-->
+<!--      <font style="font-size: 200%;  position: relative;  left: 50px;  top: 175px;color:#47d8ff" >七天完成任务数量</font>-->
+<!--    </div>-->
+<!--    &lt;!&ndash; id就是js的getid      var myChart = echarts.init(document.getElementById('main'));&ndash;&gt;-->
+<!--    <div id="main" style="position: absolute;     left: -171px;  top: 180px; width: 676px; height: 360px;  user-select: none;  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);  padding: 0px;   margin: 0px; border-width: 0px;"></div>-->
+<!--  </div>-->
 
-  <!--警报任务div块-->
-  <div>
-    <font style="font-size: 176%; position: relative; left: 86px; top: -181px;color: #47d8ff;color:#47d8ff" >警报任务</font>
-    <div id="AlertTaskJSs"  style=" position: absolute;left:-109px;top: 23px;width: 516px;height: 274px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>
-  </div>
+<!--&lt;!&ndash;  警报任务div块&ndash;&gt;-->
+<!--  <div>-->
+<!--    <font style="font-size: 176%; position: relative; left: 86px; top: -181px;color: #47d8ff;color:#47d8ff" >警报任务</font>-->
+<!--    <div id="AlertTaskJSs"  style=" position: absolute;left:-109px;top: 23px;width: 516px;height: 274px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>-->
+<!--  </div>-->
 
-  <!--执行任务div块-->
-  <div>
-    <font style="    font-size: 176%; position: relative;  left: 435px; top: -217px;color:#47d8ff" >执行任务</font>
-    <div  id="ExecutetaskJS"  style=" position: absolute;left: 240px; top: 22px;;width: 516px;height: 274px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>
-  </div>
+<!--  &lt;!&ndash;执行任务div块&ndash;&gt;-->
+<!--  <div>-->
+<!--    <font style="    font-size: 176%; position: relative;  left: 435px; top: -217px;color:#47d8ff" >执行任务</font>-->
+<!--    <div  id="ExecutetaskJS"  style=" position: absolute;left: 240px; top: 22px;;width: 516px;height: 274px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>-->
+<!--  </div>-->
 
-  <!--超时任务div块-->
-  <div>
-    <font style="font-size: 176%;position: relative;left: 750px;top: -254px;color: #47d8ff;" >超时任务</font>
-    <div id="timeOutTaskJS"  style="position: absolute;left: 555px; top: 22px;width: 516px;height: 274px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>
-  </div>
+<!--&lt;!&ndash;  超时任务div块&ndash;&gt;-->
+<!--  <div>-->
+<!--    <font style="font-size: 176%;position: relative;left: 750px;top: -254px;color: #47d8ff;" >超时任务</font>-->
+<!--    <div id="timeOutTaskJS"  style="position: absolute;left: 555px; top: 22px;width: 516px;height: 274px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>-->
+<!--  </div>-->
 
 
-  <!--七天新增老人div块-->
-  <font style="font-size: 200%;  position: relative;  left: 237px; top: -5px;color:#47d8ff" >七天新增老人数量</font>
-  <div id="numberOfElderly"  style="position: absolute;left: 89px; top: 371px;  width: 586px; height: 305px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>
-</div>
-<!---->
+<!--&lt;!&ndash;  七天新增老人div块&ndash;&gt;-->
+<!--  <font style="font-size: 200%;  position: relative;  left: 237px; top: -5px;color:#47d8ff" >七天新增老人数量</font>-->
+<!--  <div id="numberOfElderly"  style="position: absolute;left: 89px; top: 371px;  width: 586px; height: 305px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>-->
+<!--</div>-->
 
 
 
-<div class="container">
+
+<!--<div class="map-container">-->
   <div id="map"></div>
-  <div id="infoBox"></div>
+<!--</div>-->
+<div class="chart-wrapper">
+  <div class="container1">
+    <div class="chart-container" id="chart1-container">
+      <div id="chart1"></div>
+    </div>
+    <div class="chart-container" id="chart2-container">
+      <div id="chart2"></div>
+    </div>
+    <div class="chart-container" id="chart3-container">
+      <div id="chart3"></div>
+    </div>
+  </div>
 </div>
 <div class="table-content">
   <table id="data-table">
@@ -524,1210 +604,1512 @@
 
 <script src="https://cdn.jsdelivr.net/npm/ol@6.9.0/dist/ol.js"></script>
 <script type="text/javascript">
+  // 第一个图表的配置和数据
+  var chart1Dom = document.getElementById('chart1');
+  var chart1 = echarts.init(chart1Dom);
+  var option1 = {
+    title: {
+      text: 'Referer of a Website',
+      subtext: 'Fake Data',
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left'
+    },
+    series: [
+      {
+        name: 'Access From',
+        type: 'pie',
+        radius: '50%',
+        data: [
+          { value: 1048, name: 'Search Engine' },
+          { value: 735, name: 'Direct' },
+          { value: 580, name: 'Email' },
+          { value: 484, name: 'Union Ads' },
+          { value: 300, name: 'Video Ads' }
+        ],
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }
+    ]
+  };
+  chart1.setOption(option1);
 
-    // var modulesDiv = document.getElementById('modules');
+  // 第二个图表的配置和数据
+  var chart2Dom = document.getElementById('chart2');
+  var chart2 = echarts.init(chart2Dom);
+  var option2 = {
+    title: {
+      text: 'Feature Sample: Gradient Color, Shadow, Click Zoom',
+      subtext: '特性示例：渐变色 阴影 点击缩放'
+    },
+    xAxis: {
+      data: ['点', '击', '柱', '子', '或', '者', '两', '指', '在', '触', '屏', '上', '滑', '动', '能', '够', '自', '动', '缩', '放'],
+      axisLabel: {
+        inside: true,
+        color: '#fff'
+      },
+      axisTick: {
+        show: false
+      },
+      axisLine: {
+        show: false
+      },
+      z: 10
+    },
+    yAxis: {
+      axisLine: {
+        show: false
+      },
+      axisTick: {
+        show: false
+      },
+      axisLabel: {
+        color: '#999'
+      }
+    },
+    dataZoom: [
+      {
+        type: 'inside'
+      }
+    ],
+    series: [
+      {
+        type: 'bar',
+        showBackground: true,
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#83bff6' },
+            { offset: 0.5, color: '#188df0' },
+            { offset: 1, color: '#188df0' }
+          ])
+        },
+        emphasis: {
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#2378f7' },
+              { offset: 0.7, color: '#2378f7' },
+              { offset: 1, color: '#83bff6' }
+            ])
+          }
+        },
+        data: [220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 90, 149, 210, 122, 133, 334, 198, 123, 125, 220]
+      }
+    ]
+  };
+  // Enable data zoom when user click bar.
+  const zoomSize = 6;
+  chart2.on('click', function (params) {
+    console.log(option2.xAxis.data[Math.max(params.dataIndex - zoomSize / 2, 0)]);
+    chart2.dispatchAction({
+      type: 'dataZoom',
+      startValue: option2.xAxis.data[Math.max(params.dataIndex - zoomSize / 2, 0)],
+      endValue: option2.xAxis.data[Math.min(params.dataIndex + zoomSize / 2, option2.xAxis.data.length - 1)]
+    });
+  });
+  chart2.setOption(option2);
+
+
+
+
+
+  var chart3Dom = document.getElementById('chart3');
+  var chart3 = echarts.init(chart3Dom);
+  var option3 = {
+    color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
+    title: {
+      text: 'Gradient Stacked Area Chart'
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        label: {
+          backgroundColor: '#6a7985'
+        }
+      }
+    },
+    legend: {
+      data: ['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5']
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {}
+      }
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: [
+      {
+        type: 'category',
+        boundaryGap: false,
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value'
+      }
+    ],
+    series: [
+      {
+        name: 'Line 1',
+        type: 'line',
+        stack: 'Total',
+        smooth: true,
+        lineStyle: {
+          width: 0
+        },
+        showSymbol: false,
+        areaStyle: {
+          opacity: 0.8,
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: 'rgb(128, 255, 165)'
+            },
+            {
+              offset: 1,
+              color: 'rgb(1, 191, 236)'
+            }
+          ])
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: [140, 232, 101, 264, 90, 340, 250]
+      },
+      {
+        name: 'Line 2',
+        type: 'line',
+        stack: 'Total',
+        smooth: true,
+        lineStyle: {
+          width: 0
+        },
+        showSymbol: false,
+        areaStyle: {
+          opacity: 0.8,
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: 'rgb(0, 221, 255)'
+            },
+            {
+              offset: 1,
+              color: 'rgb(77, 119, 255)'
+            }
+          ])
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: [120, 282, 111, 234, 220, 340, 310]
+      },
+      {
+        name: 'Line 3',
+        type: 'line',
+        stack: 'Total',
+        smooth: true,
+        lineStyle: {
+          width: 0
+        },
+        showSymbol: false,
+        areaStyle: {
+          opacity: 0.8,
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: 'rgb(55, 162, 255)'
+            },
+            {
+              offset: 1,
+              color: 'rgb(116, 21, 219)'
+            }
+          ])
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: [320, 132, 201, 334, 190, 130, 220]
+      },
+      {
+        name: 'Line 4',
+        type: 'line',
+        stack: 'Total',
+        smooth: true,
+        lineStyle: {
+          width: 0
+        },
+        showSymbol: false,
+        areaStyle: {
+          opacity: 0.8,
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: 'rgb(255, 0, 135)'
+            },
+            {
+              offset: 1,
+              color: 'rgb(135, 0, 157)'
+            }
+          ])
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: [220, 402, 231, 134, 190, 230, 120]
+      },
+      {
+        name: 'Line 5',
+        type: 'line',
+        stack: 'Total',
+        smooth: true,
+        lineStyle: {
+          width: 0
+        },
+        showSymbol: false,
+        label: {
+          show: true,
+          position: 'top'
+        },
+        areaStyle: {
+          opacity: 0.8,
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: 'rgb(255, 191, 0)'
+            },
+            {
+              offset: 1,
+              color: 'rgb(224, 62, 76)'
+            }
+          ])
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: [220, 302, 181, 234, 210, 290, 150]
+      }
+    ]
+  };
+  chart3.setOption(option3);
+  // var modulesDiv = document.getElementById('modules');
     // if (modulesDiv.style.display === 'none') {
     //   modulesDiv.style.display = 'block';
     // } else {
     //   modulesDiv.style.display = 'none';
     // }
-    var myChart = echarts.init(document.getElementById('main'));
-
-    const CubeLeft = echarts.graphic.extendShape({
-      shape: {
-        x: 20,
-        y: 10
-      },
-      buildPath: function(ctx, shape) {
-        const xAxisPoint = shape.xAxisPoint
-        const c0 = [shape.x, shape.y]
-        const c1 = [shape.x - 9, shape.y - 9]
-        const c2 = [xAxisPoint[0] - 9, xAxisPoint[1] - 9]
-        const c3 = [xAxisPoint[0], xAxisPoint[1]]
-        ctx.moveTo(c0[0], c0[1]).lineTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).closePath()
-      }
-    })
-    const CubeRight = echarts.graphic.extendShape({
-      shape: {
-        x: 10,
-        y: 10
-      },
-      buildPath: function(ctx, shape) {
-        const xAxisPoint = shape.xAxisPoint
-        const c1 = [shape.x, shape.y]
-        const c2 = [xAxisPoint[0], xAxisPoint[1]]
-        const c3 = [xAxisPoint[0] + 18, xAxisPoint[1] - 9]
-        const c4 = [shape.x + 18, shape.y - 9]
-        ctx.moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).lineTo(c4[0], c4[1]).closePath()
-      }
-    })
-    const CubeTop = echarts.graphic.extendShape({
-      shape: {
-        x: 0,
-        y: 0
-      },
-      buildPath: function(ctx, shape) {
-        const c1 = [shape.x, shape.y]
-        const c2 = [shape.x + 18, shape.y - 9]
-        const c3 = [shape.x + 9, shape.y - 18]
-        const c4 = [shape.x - 9, shape.y - 9]
-        ctx.moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).lineTo(c4[0], c4[1]).closePath()
-      }
-    })
-    echarts.graphic.registerShape('CubeLeft', CubeLeft)
-    echarts.graphic.registerShape('CubeRight', CubeRight)
-    echarts.graphic.registerShape('CubeTop', CubeTop)
-    const MAX = [6000, 6000, 6000, 6000, 6000, 5000, 4000, 3000, 2000, 4000, 3000, 2000]
-    const VALUE = [2012, 1230, 3790, 2349, 1654, 1230, 3790, 2349, 1654, 3790, 2349, 1654]
-    option = {
-      // backgroundColor: "#010d3a",
-      title: {
-        text: '',
-        top: 32,
-        left: 18,
-        textStyle: {
-          color: '#00F6FF',
-          fontSize: 24
-        }
-      },
-      /*调整表格大小*/
-      grid: {
-        left: 0,
-        right: 0,
-        bottom: '6%',
-        top: 90,
-        containLabel: true
-      },
-      xAxis: {
-        type: 'category',
-        data: ['德州', '德城区', '陵城区', '禹城市', '乐陵市', '临邑县',
-          '平原县', '夏津县', '武城县', '庆云县', '宁津县', '齐河县'
-        ],
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: 'white'
-          }
-        },
-        offset: 20,
-        axisTick: {
-          show: false,
-          length: 9,
-          alignWithLabel: true,
-          lineStyle: {
-            color: '#7DFFFD'
-          }
-        },
-        axisLabel: {
-          fontSize: 10
-        }
-      },
-      yAxis: {
-        type: 'value',
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: 'white'
-          }
-        },
-        splitLine: {
-          show: false
-        },
-        axisTick: {
-          show: false
-        },
-        axisLabel: {
-          fontSize: 16
-        },
-        boundaryGap: ['20%', '20%']
-      },
-      series: [{
-        type: 'custom',
-        renderItem: function(params, api) {
-          const location = api.coord([api.value(0), api.value(1)])
-          return {
-            type: 'group',
-            children: [{
-              type: 'CubeLeft',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: 'rgba(7,29,97,.6)'
-              }
-            }, {
-              type: 'CubeRight',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: 'rgba(10,35,108,.7)'
-              }
-            }, {
-              type: 'CubeTop',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: 'rgba(11,42,106,.8)'
-              }
-            }]
-          }
-        },
-        data: MAX
-      }, {
-        type: 'custom',
-        renderItem: (params, api) => {
-          const location = api.coord([api.value(0), api.value(1)])
-          return {
-            type: 'group',
-            children: [{
-              type: 'CubeLeft',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0,
-                  color: '#3B80E2'
-                },
-                  {
-                    offset: 1,
-                    color: '#49BEE5'
-                  }
-                ])
-              }
-            }, {
-              type: 'CubeRight',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0,
-                  color: '#3B80E2'
-                },
-                  {
-                    offset: 1,
-                    color: '#49BEE5'
-                  }
-                ])
-              }
-            }, {
-              type: 'CubeTop',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0,
-                  color: '#3B80E2'
-                },
-                  {
-                    offset: 1,
-                    color: '#49BEE5'
-                  }
-                ])
-              }
-            }]
-          }
-        },
-        data: VALUE
-      }, {
-        type: 'bar',
-        label: {
-            show: true,
-            position: 'top',
-            formatter: (e) => {
-              switch (e.name) {
-                case '10kV线路':
-                  return VALUE[0]
-                case '公用配变':
-                  return VALUE[1]
-                case '35kV主变':
-                  return VALUE[2]
-                case '水':
-
-              }
-            },
-            fontSize: 16,
-            color: '#38ff9f',
-            offset: [4, -25]
-
-        },
-        itemStyle: {
-          color: 'transparent'
-        },
-        data: MAX
-      }]
-    }
-
-    myChart.setOption(option);
-
-    var AlertTaskJS = echarts.init(document.getElementById('AlertTaskJSs'));
-    let angle = 1;//角度，用来做简单的动画效果的
-    let value = 1111;
-    optionOne = {
-      // backgroundColor:"#010d3a",
-      title: {
-        text: '{a|'+ value +'}{c|}',
-        x: 'center',
-        y: 'center',
-        textStyle: {
-          rich:{
-            a: {
-              fontSize: 48,
-              color: '#29EEF3'
-            },
-
-            c: {
-              fontSize: 20,
-              color: '#ffffff',
-              // padding: [5,0]
-            }
-          }
-        }
-      },
-
-      series: [ {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (0+angle) * Math.PI / 180,
-              endAngle: (90+angle) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (180+angle) * Math.PI / 180,
-              endAngle: (270+angle) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (270+-angle) * Math.PI / 180,
-              endAngle: (40+-angle) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (90+-angle) * Math.PI / 180,
-              endAngle: (220+-angle) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      },{
-        name: "ring5",  //绿点
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          let x0 = api.getWidth() / 2;
-          let y0 = api.getHeight() / 2;
-          let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
-          let point = getCirlPoint(x0, y0, r, (270+-angle))
-          return {
-            type: 'circle',
-            shape: {
-              cx: point.x,
-              cy: point.y,
-              r: 4
-            },
-            style: {
-              stroke: "#0CD3DB",      //绿
-              fill: "#0CD3DB"
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-
-        type: 'pie',
-        radius: ['58%', '45%'],
-        silent: true,
-        clockwise: true,
-        startAngle: 90,
-        z: 0,
-        zlevel: 0,
-        label: {
-          normal: {
-            position: "center",
-
-          }
-        },
-        data: [{
-          value: value,
-          name: "",
-          itemStyle: {
-            normal: {
-              color: { // 完成的圆环的颜色
-                colorStops: [{
-                  offset: 0,
-                  color: '#4FADFD' // 0% 处的颜色
-                }, {
-                  offset: 1,
-                  color: '#28E8FA' // 100% 处的颜色
-                }]
-              },
-            }
-          }
-        },
-          {
-            value: 100-value,
-            name: "",
-            label: {
-              normal: {
-                show: false
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: "#173164"
-              }
-            }
-          }
-        ]
-      },
-
-        {
-          name: "",
-          type: "gauge",
-          radius: "58%",
-          center: ['50%', '50%'],
-          startAngle: 0,
-          endAngle: 359.9,
-          splitNumber: 8,
-          hoverAnimation: true,
-          axisTick: {
-            show: false
-          },
-          splitLine: {
-            length: 60,
-            lineStyle: {
-              width: 5,
-              color: "#061740"
-            }
-          },
-          axisLabel: {
-            show: false
-          },
-          pointer: {
-            show: false
-          },
-          axisLine: {
-            lineStyle: {
-              opacity: 0
-            }
-          },
-          detail: {
-            show: false
-          },
-          data: [{
-            value: 0,
-            name: ""
-          }]
-        },
-
-      ]
-    };
-
-    //获取圆上面某点的坐标(x0,y0表示坐标，r半径，angle角度)
-    function getCirlPoint(x0, y0, r, angle) {
-      let x1 = x0 + r * Math.cos(angle* Math.PI / 180)
-      let y1 = y0 + r * Math.sin(angle * Math.PI / 180)
-      return {
-        x: x1,
-        y: y1
-      }
-    }
-
-    function draw(){
-      angle = angle+11
-      AlertTaskJS.setOption(optionOne, true)
-      //window.requestAnimationFrame(draw);
-    }
-
-    setInterval(function() {
-      //用setInterval做动画感觉有问题
-      draw()
-    }, 100);
-
-    AlertTaskJS.setOption(optionOne);
-
-
-    var ExecutetaskJSS = echarts.init(document.getElementById('ExecutetaskJS'));
-    let angle1 = 0;//角度，用来做简单的动画效果的
-    let value1 = 222;
-    optionTwo = {
-      // backgroundColor:"#010d3a",
-      title: {
-        text: '{a|'+ value1 +'}{c|}',
-        x: 'center',
-        y: 'center',
-        textStyle: {
-          rich:{
-            a: {
-              fontSize: 48,
-              color: '#29EEF3'
-            },
-
-            c: {
-              fontSize: 20,
-              color: '#ffffff',
-              // padding: [5,0]
-            }
-          }
-        }
-      },
-
-      series: [ {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (0+angle1) * Math.PI / 180,
-              endAngle: (90+angle1) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (180+angle1) * Math.PI / 180,
-              endAngle: (270+angle1) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (270+-angle1) * Math.PI / 180,
-              endAngle: (40+-angle1) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (90+-angle1) * Math.PI / 180,
-              endAngle: (220+-angle1) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          let x0 = api.getWidth() / 2;
-          let y0 = api.getHeight() / 2;
-          let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
-          let point = getCirlPoint(x0, y0, r, (90+-angle1))
-          return {
-            type: 'circle',
-            shape: {
-              cx: point.x,
-              cy: point.y,
-              r: 4
-            },
-            style: {
-              stroke: "#0CD3DB",//粉
-              fill: "#0CD3DB"
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",  //绿点
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          let x0 = api.getWidth() / 2;
-          let y0 = api.getHeight() / 2;
-          let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
-          let point = getCirlPoint(x0, y0, r, (270+-angle1))
-          return {
-            type: 'circle',
-            shape: {
-              cx: point.x,
-              cy: point.y,
-              r: 4
-            },
-            style: {
-              stroke: "#0CD3DB",      //绿
-              fill: "#0CD3DB"
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-
-        type: 'pie',
-        radius: ['58%', '45%'],
-        silent: true,
-        clockwise: true,
-        startAngle: 90,
-        z: 0,
-        zlevel: 0,
-        label: {
-          normal: {
-            position: "center",
-
-          }
-        },
-        data: [{
-          value: value,
-          name: "",
-          itemStyle: {
-            normal: {
-              color: { // 完成的圆环的颜色
-                colorStops: [{
-                  offset: 0,
-                  color: '#4FADFD' // 0% 处的颜色
-                }, {
-                  offset: 1,
-                  color: '#28E8FA' // 100% 处的颜色
-                }]
-              },
-            }
-          }
-        },
-          {
-            value: 100-value,
-            name: "",
-            label: {
-              normal: {
-                show: false
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: "#173164"
-              }
-            }
-          }
-        ]
-      },
-
-        {
-          name: "",
-          type: "gauge",
-          radius: "58%",
-          center: ['50%', '50%'],
-          startAngle: 0,
-          endAngle: 359.9,
-          splitNumber: 8,
-          hoverAnimation: true,
-          axisTick: {
-            show: false
-          },
-          splitLine: {
-            length: 60,
-            lineStyle: {
-              width: 5,
-              color: "#061740"
-            }
-          },
-          axisLabel: {
-            show: false
-          },
-          pointer: {
-            show: false
-          },
-          axisLine: {
-            lineStyle: {
-              opacity: 0
-            }
-          },
-          detail: {
-            show: false
-          },
-          data: [{
-            value: 0,
-            name: ""
-          }]
-        },
-
-      ]
-    };
-
-    //获取圆上面某点的坐标(x0,y0表示坐标，r半径，angle角度)
-    function getCirlPoint(x0, y0, r, angle1) {
-      let x1 = x0 + r * Math.cos(angle1 * Math.PI / 180)
-      let y1 = y0 + r * Math.sin(angle1 * Math.PI / 180)
-      return {
-        x: x1,
-        y: y1
-      }
-    }
-
-    function draw1(){
-      angle1 = angle1+11
-      ExecutetaskJSS.setOption(optionTwo, true)
-      //window.requestAnimationFrame(draw);
-    }
-
-    setInterval(function() {
-      //用setInterval做动画感觉有问题
-      draw1()
-    }, 100);
-    ExecutetaskJSS.setOption(optionTwo);
-
-
-    var timeOutTask = echarts.init(document.getElementById('timeOutTaskJS'));
-    let angle2 = 0;//角度，用来做简单的动画效果的
-    let value2 = 12;
-    optionTask = {
-      // backgroundColor: "#010d3a",
-      title: {
-        text: '{a|' + value2 + '}{c|}',
-        x: 'center',
-        y: 'center',
-        textStyle: {
-          rich: {
-            a: {
-              fontSize: 48,
-              color: '#29EEF3'
-            },
-
-            c: {
-              fontSize: 20,
-              color: '#ffffff',
-              // padding: [5,0]
-            }
-          }
-        }
-      },
-
-      series: [{
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (0 + angle2) * Math.PI / 180,
-              endAngle: (90 + angle2) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (180 + angle2) * Math.PI / 180,
-              endAngle: (270 + angle2) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (270 + -angle2) * Math.PI / 180,
-              endAngle: (40 + -angle2) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (90 + -angle2) * Math.PI / 180,
-              endAngle: (220 + -angle2) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          let x0 = api.getWidth() / 2;
-          let y0 = api.getHeight() / 2;
-          let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
-          let point = getCirlPoint(x0, y0, r, (90 + -angle1))
-          return {
-            type: 'circle',
-            shape: {
-              cx: point.x,
-              cy: point.y,
-              r: 4
-            },
-            style: {
-              stroke: "#0CD3DB",//粉
-              fill: "#0CD3DB"
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",  //绿点
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          let x0 = api.getWidth() / 2;
-          let y0 = api.getHeight() / 2;
-          let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
-          let point = getCirlPoint(x0, y0, r, (270 + -angle1))
-          return {
-            type: 'circle',
-            shape: {
-              cx: point.x,
-              cy: point.y,
-              r: 4
-            },
-            style: {
-              stroke: "#0CD3DB",      //绿
-              fill: "#0CD3DB"
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-
-        type: 'pie',
-        radius: ['58%', '45%'],
-        silent: true,
-        clockwise: true,
-        startAngle: 90,
-        z: 0,
-        zlevel: 0,
-        label: {
-          normal: {
-            position: "center",
-
-          }
-        },
-        data: [{
-          value: value,
-          name: "",
-          itemStyle: {
-            normal: {
-              color: { // 完成的圆环的颜色
-                colorStops: [{
-                  offset: 0,
-                  color: '#4FADFD' // 0% 处的颜色
-                }, {
-                  offset: 1,
-                  color: '#28E8FA' // 100% 处的颜色
-                }]
-              },
-            }
-          }
-        },
-          {
-            value: 100 - value,
-            name: "",
-            label: {
-              normal: {
-                show: false
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: "#173164"
-              }
-            }
-          }
-        ]
-      },
-
-        {
-          name: "",
-          type: "gauge",
-          radius: "58%",
-          center: ['50%', '50%'],
-          startAngle: 0,
-          endAngle: 359.9,
-          splitNumber: 8,
-          hoverAnimation: true,
-          axisTick: {
-            show: false
-          },
-          splitLine: {
-            length: 60,
-            lineStyle: {
-              width: 5,
-              color: "#061740"
-            }
-          },
-          axisLabel: {
-            show: false
-          },
-          pointer: {
-            show: false
-          },
-          axisLine: {
-            lineStyle: {
-              opacity: 0
-            }
-          },
-          detail: {
-            show: false
-          },
-          data: [{
-            value: 0,
-            name: ""
-          }]
-        },
-
-      ]
-    };
-
-    //获取圆上面某点的坐标(x0,y0表示坐标，r半径，angle角度)
-    function getCirlPoint(x0, y0, r, angle1) {
-      let x1 = x0 + r * Math.cos(angle1 * Math.PI / 180)
-      let y1 = y0 + r * Math.sin(angle1 * Math.PI / 180)
-      return {
-        x: x1,
-        y: y1
-      }
-    }
-
-    function draw2() {
-      angle2 = angle2+11
-      timeOutTask.setOption(optionTask, true)
-      //window.requestAnimationFrame(draw);
-    }
-
-    setInterval(function () {
-      //用setInterval做动画感觉有问题
-      draw2()
-    }, 100);
-    timeOutTask.setOption(optionTask);
-
-
-    var numberOfElderlyyu = echarts.init(document.getElementById('numberOfElderly'));
-
-    const data = [11, 182, 191, 234, 290, 330, 310]
-    const sideData = data.map(item => item + 4.5)
-
-    optiontasks = {
-      //设置canvas内部表格的内距
-      grid: {
-        left: 0,
-        right: 0,
-        bottom: '0%',
-        top: -5,
-        containLabel: true
-      },
-      backgroundColor: "#010d3a",
-      tooltip: {
-        trigger: 'axis',
-        formatter: "{b} : {c}",
-        axisPointer: { // 坐标轴指示器，坐标轴触发有效
-          type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-        }
-      },
-      xAxis: {
-        data: ['2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11'],
-        //坐标轴
-        axisLine: {
-          lineStyle: {
-            color: '#3eb2e8'
-          }
-        },
-        //坐标值标注
-        axisLabel: {
-          show: true,
-          textStyle: {
-            color: '#fff',
-          }
-        }
-      },
-      yAxis: {
-        //坐标轴
-        axisLine: {
-          show: false
-        },
-        //坐标值标注
-        axisLabel: {
-          show: true,
-          textStyle: {
-            color: '#fff',
-          }
-        },
-        //分格线
-        splitLine: {
-          lineStyle: {
-            color: '#4784e8'
-          }
-        }
-      },
-      series: [{
-        name: 'a',
-        tooltip: {
-          show: false
-        },
-        type: 'bar',
-        barWidth: 24.5,
-        itemStyle: {
-          normal: {
-            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
-              offset: 0,
-              color: "#0B4EC3" // 0% 处的颜色
-            }, {
-              offset: 0.6,
-              color: "#138CEB" // 60% 处的颜色
-            }, {
-              offset: 1,
-              color: "#17AAFE" // 100% 处的颜色
-            }], false)
-          }
-        },
-        data: data,
-        barGap: 0
-      }, {
-        type: 'bar',
-        barWidth: 4,
-        itemStyle: {
-          normal: {
-            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
-              offset: 0,
-              color: "#09337C" // 0% 处的颜色
-            }, {
-              offset: 0.6,
-              color: "#0761C0" // 60% 处的颜色
-            }, {
-              offset: 1,
-              color: "#0575DE" // 100% 处的颜色
-            }], false)
-          }
-        },
-        barGap: 0,
-        data: sideData
-      }, {
-        name: 'b',
-        tooltip: {
-          show: false
-        },
-        type: 'pictorialBar',
-        itemStyle: {
-          borderWidth: 0,
-          borderColor: '#0571D5',
-          color: '#1779E0'
-        },
-        symbol: 'path://M 0,0 l 120,0 l -30,60 l -120,0 z',
-        symbolSize: ['30', '12'],
-        symbolOffset: ['0', '-11'],
-        //symbolRotate: -5,
-        symbolPosition: 'end',
-        data: data,
-        z: 3
-      }]
-    };
-    numberOfElderlyyu.setOption(optiontasks);
+    // var myChart = echarts.init(document.getElementById('main'));
+    //
+    // const CubeLeft = echarts.graphic.extendShape({
+    //   shape: {
+    //     x: 20,
+    //     y: 10
+    //   },
+    //   buildPath: function(ctx, shape) {
+    //     const xAxisPoint = shape.xAxisPoint
+    //     const c0 = [shape.x, shape.y]
+    //     const c1 = [shape.x - 9, shape.y - 9]
+    //     const c2 = [xAxisPoint[0] - 9, xAxisPoint[1] - 9]
+    //     const c3 = [xAxisPoint[0], xAxisPoint[1]]
+    //     ctx.moveTo(c0[0], c0[1]).lineTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).closePath()
+    //   }
+    // })
+    // const CubeRight = echarts.graphic.extendShape({
+    //   shape: {
+    //     x: 10,
+    //     y: 10
+    //   },
+    //   buildPath: function(ctx, shape) {
+    //     const xAxisPoint = shape.xAxisPoint
+    //     const c1 = [shape.x, shape.y]
+    //     const c2 = [xAxisPoint[0], xAxisPoint[1]]
+    //     const c3 = [xAxisPoint[0] + 18, xAxisPoint[1] - 9]
+    //     const c4 = [shape.x + 18, shape.y - 9]
+    //     ctx.moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).lineTo(c4[0], c4[1]).closePath()
+    //   }
+    // })
+    // const CubeTop = echarts.graphic.extendShape({
+    //   shape: {
+    //     x: 0,
+    //     y: 0
+    //   },
+    //   buildPath: function(ctx, shape) {
+    //     const c1 = [shape.x, shape.y]
+    //     const c2 = [shape.x + 18, shape.y - 9]
+    //     const c3 = [shape.x + 9, shape.y - 18]
+    //     const c4 = [shape.x - 9, shape.y - 9]
+    //     ctx.moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).lineTo(c4[0], c4[1]).closePath()
+    //   }
+    // })
+    // echarts.graphic.registerShape('CubeLeft', CubeLeft)
+    // echarts.graphic.registerShape('CubeRight', CubeRight)
+    // echarts.graphic.registerShape('CubeTop', CubeTop)
+    // const MAX = [6000, 6000, 6000, 6000, 6000, 5000, 4000, 3000, 2000, 4000, 3000, 2000]
+    // const VALUE = [2012, 1230, 3790, 2349, 1654, 1230, 3790, 2349, 1654, 3790, 2349, 1654]
+    // option = {
+    //   // backgroundColor: "#010d3a",
+    //   title: {
+    //     text: '',
+    //     top: 32,
+    //     left: 18,
+    //     textStyle: {
+    //       color: '#00F6FF',
+    //       fontSize: 24
+    //     }
+    //   },
+    //   /*调整表格大小*/
+    //   grid: {
+    //     left: 0,
+    //     right: 0,
+    //     bottom: '6%',
+    //     top: 90,
+    //     containLabel: true
+    //   },
+    //   xAxis: {
+    //     type: 'category',
+    //     data: ['德州', '德城区', '陵城区', '禹城市', '乐陵市', '临邑县',
+    //       '平原县', '夏津县', '武城县', '庆云县', '宁津县', '齐河县'
+    //     ],
+    //     axisLine: {
+    //       show: true,
+    //       lineStyle: {
+    //         color: 'white'
+    //       }
+    //     },
+    //     offset: 20,
+    //     axisTick: {
+    //       show: false,
+    //       length: 9,
+    //       alignWithLabel: true,
+    //       lineStyle: {
+    //         color: '#7DFFFD'
+    //       }
+    //     },
+    //     axisLabel: {
+    //       fontSize: 10
+    //     }
+    //   },
+    //   yAxis: {
+    //     type: 'value',
+    //     axisLine: {
+    //       show: true,
+    //       lineStyle: {
+    //         color: 'white'
+    //       }
+    //     },
+    //     splitLine: {
+    //       show: false
+    //     },
+    //     axisTick: {
+    //       show: false
+    //     },
+    //     axisLabel: {
+    //       fontSize: 16
+    //     },
+    //     boundaryGap: ['20%', '20%']
+    //   },
+    //   series: [{
+    //     type: 'custom',
+    //     renderItem: function(params, api) {
+    //       const location = api.coord([api.value(0), api.value(1)])
+    //       return {
+    //         type: 'group',
+    //         children: [{
+    //           type: 'CubeLeft',
+    //           shape: {
+    //             api,
+    //             xValue: api.value(0),
+    //             yValue: api.value(1),
+    //             x: location[0],
+    //             y: location[1],
+    //             xAxisPoint: api.coord([api.value(0), 0])
+    //           },
+    //           style: {
+    //             fill: 'rgba(7,29,97,.6)'
+    //           }
+    //         }, {
+    //           type: 'CubeRight',
+    //           shape: {
+    //             api,
+    //             xValue: api.value(0),
+    //             yValue: api.value(1),
+    //             x: location[0],
+    //             y: location[1],
+    //             xAxisPoint: api.coord([api.value(0), 0])
+    //           },
+    //           style: {
+    //             fill: 'rgba(10,35,108,.7)'
+    //           }
+    //         }, {
+    //           type: 'CubeTop',
+    //           shape: {
+    //             api,
+    //             xValue: api.value(0),
+    //             yValue: api.value(1),
+    //             x: location[0],
+    //             y: location[1],
+    //             xAxisPoint: api.coord([api.value(0), 0])
+    //           },
+    //           style: {
+    //             fill: 'rgba(11,42,106,.8)'
+    //           }
+    //         }]
+    //       }
+    //     },
+    //     data: MAX
+    //   }, {
+    //     type: 'custom',
+    //     renderItem: (params, api) => {
+    //       const location = api.coord([api.value(0), api.value(1)])
+    //       return {
+    //         type: 'group',
+    //         children: [{
+    //           type: 'CubeLeft',
+    //           shape: {
+    //             api,
+    //             xValue: api.value(0),
+    //             yValue: api.value(1),
+    //             x: location[0],
+    //             y: location[1],
+    //             xAxisPoint: api.coord([api.value(0), 0])
+    //           },
+    //           style: {
+    //             fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+    //               offset: 0,
+    //               color: '#3B80E2'
+    //             },
+    //               {
+    //                 offset: 1,
+    //                 color: '#49BEE5'
+    //               }
+    //             ])
+    //           }
+    //         }, {
+    //           type: 'CubeRight',
+    //           shape: {
+    //             api,
+    //             xValue: api.value(0),
+    //             yValue: api.value(1),
+    //             x: location[0],
+    //             y: location[1],
+    //             xAxisPoint: api.coord([api.value(0), 0])
+    //           },
+    //           style: {
+    //             fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+    //               offset: 0,
+    //               color: '#3B80E2'
+    //             },
+    //               {
+    //                 offset: 1,
+    //                 color: '#49BEE5'
+    //               }
+    //             ])
+    //           }
+    //         }, {
+    //           type: 'CubeTop',
+    //           shape: {
+    //             api,
+    //             xValue: api.value(0),
+    //             yValue: api.value(1),
+    //             x: location[0],
+    //             y: location[1],
+    //             xAxisPoint: api.coord([api.value(0), 0])
+    //           },
+    //           style: {
+    //             fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+    //               offset: 0,
+    //               color: '#3B80E2'
+    //             },
+    //               {
+    //                 offset: 1,
+    //                 color: '#49BEE5'
+    //               }
+    //             ])
+    //           }
+    //         }]
+    //       }
+    //     },
+    //     data: VALUE
+    //   }, {
+    //     type: 'bar',
+    //     label: {
+    //         show: true,
+    //         position: 'top',
+    //         formatter: (e) => {
+    //           switch (e.name) {
+    //             case '10kV线路':
+    //               return VALUE[0]
+    //             case '公用配变':
+    //               return VALUE[1]
+    //             case '35kV主变':
+    //               return VALUE[2]
+    //             case '水':
+    //
+    //           }
+    //         },
+    //         fontSize: 16,
+    //         color: '#38ff9f',
+    //         offset: [4, -25]
+    //
+    //     },
+    //     itemStyle: {
+    //       color: 'transparent'
+    //     },
+    //     data: MAX
+    //   }]
+    // }
+    //
+    // myChart.setOption(option);
+    //
+    // var AlertTaskJS = echarts.init(document.getElementById('AlertTaskJSs'));
+    // let angle = 1;//角度，用来做简单的动画效果的
+    // let value = 1111;
+    // optionOne = {
+    //   // backgroundColor:"#010d3a",
+    //   title: {
+    //     text: '{a|'+ value +'}{c|}',
+    //     x: 'center',
+    //     y: 'center',
+    //     textStyle: {
+    //       rich:{
+    //         a: {
+    //           fontSize: 48,
+    //           color: '#29EEF3'
+    //         },
+    //
+    //         c: {
+    //           fontSize: 20,
+    //           color: '#ffffff',
+    //           // padding: [5,0]
+    //         }
+    //       }
+    //     }
+    //   },
+    //
+    //   series: [ {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function(params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
+    //           startAngle: (0+angle) * Math.PI / 180,
+    //           endAngle: (90+angle) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function(params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
+    //           startAngle: (180+angle) * Math.PI / 180,
+    //           endAngle: (270+angle) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function(params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
+    //           startAngle: (270+-angle) * Math.PI / 180,
+    //           endAngle: (40+-angle) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function(params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
+    //           startAngle: (90+-angle) * Math.PI / 180,
+    //           endAngle: (220+-angle) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   },{
+    //     name: "ring5",  //绿点
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function(params, api) {
+    //       let x0 = api.getWidth() / 2;
+    //       let y0 = api.getHeight() / 2;
+    //       let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
+    //       let point = getCirlPoint(x0, y0, r, (270+-angle))
+    //       return {
+    //         type: 'circle',
+    //         shape: {
+    //           cx: point.x,
+    //           cy: point.y,
+    //           r: 4
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",      //绿
+    //           fill: "#0CD3DB"
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //
+    //     type: 'pie',
+    //     radius: ['58%', '45%'],
+    //     silent: true,
+    //     clockwise: true,
+    //     startAngle: 90,
+    //     z: 0,
+    //     zlevel: 0,
+    //     label: {
+    //       normal: {
+    //         position: "center",
+    //
+    //       }
+    //     },
+    //     data: [{
+    //       value: value,
+    //       name: "",
+    //       itemStyle: {
+    //         normal: {
+    //           color: { // 完成的圆环的颜色
+    //             colorStops: [{
+    //               offset: 0,
+    //               color: '#4FADFD' // 0% 处的颜色
+    //             }, {
+    //               offset: 1,
+    //               color: '#28E8FA' // 100% 处的颜色
+    //             }]
+    //           },
+    //         }
+    //       }
+    //     },
+    //       {
+    //         value: 100-value,
+    //         name: "",
+    //         label: {
+    //           normal: {
+    //             show: false
+    //           }
+    //         },
+    //         itemStyle: {
+    //           normal: {
+    //             color: "#173164"
+    //           }
+    //         }
+    //       }
+    //     ]
+    //   },
+    //
+    //     {
+    //       name: "",
+    //       type: "gauge",
+    //       radius: "58%",
+    //       center: ['50%', '50%'],
+    //       startAngle: 0,
+    //       endAngle: 359.9,
+    //       splitNumber: 8,
+    //       hoverAnimation: true,
+    //       axisTick: {
+    //         show: false
+    //       },
+    //       splitLine: {
+    //         length: 60,
+    //         lineStyle: {
+    //           width: 5,
+    //           color: "#061740"
+    //         }
+    //       },
+    //       axisLabel: {
+    //         show: false
+    //       },
+    //       pointer: {
+    //         show: false
+    //       },
+    //       axisLine: {
+    //         lineStyle: {
+    //           opacity: 0
+    //         }
+    //       },
+    //       detail: {
+    //         show: false
+    //       },
+    //       data: [{
+    //         value: 0,
+    //         name: ""
+    //       }]
+    //     },
+    //
+    //   ]
+    // };
+    //
+    // //获取圆上面某点的坐标(x0,y0表示坐标，r半径，angle角度)
+    // function getCirlPoint(x0, y0, r, angle) {
+    //   let x1 = x0 + r * Math.cos(angle* Math.PI / 180)
+    //   let y1 = y0 + r * Math.sin(angle * Math.PI / 180)
+    //   return {
+    //     x: x1,
+    //     y: y1
+    //   }
+    // }
+    //
+    // function draw(){
+    //   angle = angle+11
+    //   AlertTaskJS.setOption(optionOne, true)
+    //   //window.requestAnimationFrame(draw);
+    // }
+    //
+    // setInterval(function() {
+    //   //用setInterval做动画感觉有问题
+    //   draw()
+    // }, 100);
+    //
+    // AlertTaskJS.setOption(optionOne);
+    //
+    //
+    // var ExecutetaskJSS = echarts.init(document.getElementById('ExecutetaskJS'));
+    // let angle1 = 0;//角度，用来做简单的动画效果的
+    // let value1 = 222;
+    // optionTwo = {
+    //   // backgroundColor:"#010d3a",
+    //   title: {
+    //     text: '{a|'+ value1 +'}{c|}',
+    //     x: 'center',
+    //     y: 'center',
+    //     textStyle: {
+    //       rich:{
+    //         a: {
+    //           fontSize: 48,
+    //           color: '#29EEF3'
+    //         },
+    //
+    //         c: {
+    //           fontSize: 20,
+    //           color: '#ffffff',
+    //           // padding: [5,0]
+    //         }
+    //       }
+    //     }
+    //   },
+    //
+    //   series: [ {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function(params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
+    //           startAngle: (0+angle1) * Math.PI / 180,
+    //           endAngle: (90+angle1) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function(params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
+    //           startAngle: (180+angle1) * Math.PI / 180,
+    //           endAngle: (270+angle1) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function(params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
+    //           startAngle: (270+-angle1) * Math.PI / 180,
+    //           endAngle: (40+-angle1) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function(params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
+    //           startAngle: (90+-angle1) * Math.PI / 180,
+    //           endAngle: (220+-angle1) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function(params, api) {
+    //       let x0 = api.getWidth() / 2;
+    //       let y0 = api.getHeight() / 2;
+    //       let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
+    //       let point = getCirlPoint(x0, y0, r, (90+-angle1))
+    //       return {
+    //         type: 'circle',
+    //         shape: {
+    //           cx: point.x,
+    //           cy: point.y,
+    //           r: 4
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",//粉
+    //           fill: "#0CD3DB"
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",  //绿点
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function(params, api) {
+    //       let x0 = api.getWidth() / 2;
+    //       let y0 = api.getHeight() / 2;
+    //       let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
+    //       let point = getCirlPoint(x0, y0, r, (270+-angle1))
+    //       return {
+    //         type: 'circle',
+    //         shape: {
+    //           cx: point.x,
+    //           cy: point.y,
+    //           r: 4
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",      //绿
+    //           fill: "#0CD3DB"
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //
+    //     type: 'pie',
+    //     radius: ['58%', '45%'],
+    //     silent: true,
+    //     clockwise: true,
+    //     startAngle: 90,
+    //     z: 0,
+    //     zlevel: 0,
+    //     label: {
+    //       normal: {
+    //         position: "center",
+    //
+    //       }
+    //     },
+    //     data: [{
+    //       value: value,
+    //       name: "",
+    //       itemStyle: {
+    //         normal: {
+    //           color: { // 完成的圆环的颜色
+    //             colorStops: [{
+    //               offset: 0,
+    //               color: '#4FADFD' // 0% 处的颜色
+    //             }, {
+    //               offset: 1,
+    //               color: '#28E8FA' // 100% 处的颜色
+    //             }]
+    //           },
+    //         }
+    //       }
+    //     },
+    //       {
+    //         value: 100-value,
+    //         name: "",
+    //         label: {
+    //           normal: {
+    //             show: false
+    //           }
+    //         },
+    //         itemStyle: {
+    //           normal: {
+    //             color: "#173164"
+    //           }
+    //         }
+    //       }
+    //     ]
+    //   },
+    //
+    //     {
+    //       name: "",
+    //       type: "gauge",
+    //       radius: "58%",
+    //       center: ['50%', '50%'],
+    //       startAngle: 0,
+    //       endAngle: 359.9,
+    //       splitNumber: 8,
+    //       hoverAnimation: true,
+    //       axisTick: {
+    //         show: false
+    //       },
+    //       splitLine: {
+    //         length: 60,
+    //         lineStyle: {
+    //           width: 5,
+    //           color: "#061740"
+    //         }
+    //       },
+    //       axisLabel: {
+    //         show: false
+    //       },
+    //       pointer: {
+    //         show: false
+    //       },
+    //       axisLine: {
+    //         lineStyle: {
+    //           opacity: 0
+    //         }
+    //       },
+    //       detail: {
+    //         show: false
+    //       },
+    //       data: [{
+    //         value: 0,
+    //         name: ""
+    //       }]
+    //     },
+    //
+    //   ]
+    // };
+    //
+    // //获取圆上面某点的坐标(x0,y0表示坐标，r半径，angle角度)
+    // function getCirlPoint(x0, y0, r, angle1) {
+    //   let x1 = x0 + r * Math.cos(angle1 * Math.PI / 180)
+    //   let y1 = y0 + r * Math.sin(angle1 * Math.PI / 180)
+    //   return {
+    //     x: x1,
+    //     y: y1
+    //   }
+    // }
+    //
+    // function draw1(){
+    //   angle1 = angle1+11
+    //   ExecutetaskJSS.setOption(optionTwo, true)
+    //   //window.requestAnimationFrame(draw);
+    // }
+    //
+    // setInterval(function() {
+    //   //用setInterval做动画感觉有问题
+    //   draw1()
+    // }, 100);
+    // ExecutetaskJSS.setOption(optionTwo);
+    //
+    //
+    // var timeOutTask = echarts.init(document.getElementById('timeOutTaskJS'));
+    // let angle2 = 0;//角度，用来做简单的动画效果的
+    // let value2 = 12;
+    // optionTask = {
+    //   // backgroundColor: "#010d3a",
+    //   title: {
+    //     text: '{a|' + value2 + '}{c|}',
+    //     x: 'center',
+    //     y: 'center',
+    //     textStyle: {
+    //       rich: {
+    //         a: {
+    //           fontSize: 48,
+    //           color: '#29EEF3'
+    //         },
+    //
+    //         c: {
+    //           fontSize: 20,
+    //           color: '#ffffff',
+    //           // padding: [5,0]
+    //         }
+    //       }
+    //     }
+    //   },
+    //
+    //   series: [{
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function (params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
+    //           startAngle: (0 + angle2) * Math.PI / 180,
+    //           endAngle: (90 + angle2) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function (params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
+    //           startAngle: (180 + angle2) * Math.PI / 180,
+    //           endAngle: (270 + angle2) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function (params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
+    //           startAngle: (270 + -angle2) * Math.PI / 180,
+    //           endAngle: (40 + -angle2) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function (params, api) {
+    //       return {
+    //         type: 'arc',
+    //         shape: {
+    //           cx: api.getWidth() / 2,
+    //           cy: api.getHeight() / 2,
+    //           r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
+    //           startAngle: (90 + -angle2) * Math.PI / 180,
+    //           endAngle: (220 + -angle2) * Math.PI / 180
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",
+    //           fill: "transparent",
+    //           lineWidth: 1.5
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function (params, api) {
+    //       let x0 = api.getWidth() / 2;
+    //       let y0 = api.getHeight() / 2;
+    //       let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
+    //       let point = getCirlPoint(x0, y0, r, (90 + -angle1))
+    //       return {
+    //         type: 'circle',
+    //         shape: {
+    //           cx: point.x,
+    //           cy: point.y,
+    //           r: 4
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",//粉
+    //           fill: "#0CD3DB"
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //     name: "ring5",  //绿点
+    //     type: 'custom',
+    //     coordinateSystem: "none",
+    //     renderItem: function (params, api) {
+    //       let x0 = api.getWidth() / 2;
+    //       let y0 = api.getHeight() / 2;
+    //       let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
+    //       let point = getCirlPoint(x0, y0, r, (270 + -angle1))
+    //       return {
+    //         type: 'circle',
+    //         shape: {
+    //           cx: point.x,
+    //           cy: point.y,
+    //           r: 4
+    //         },
+    //         style: {
+    //           stroke: "#0CD3DB",      //绿
+    //           fill: "#0CD3DB"
+    //         },
+    //         silent: true
+    //       };
+    //     },
+    //     data: [0]
+    //   }, {
+    //
+    //     type: 'pie',
+    //     radius: ['58%', '45%'],
+    //     silent: true,
+    //     clockwise: true,
+    //     startAngle: 90,
+    //     z: 0,
+    //     zlevel: 0,
+    //     label: {
+    //       normal: {
+    //         position: "center",
+    //
+    //       }
+    //     },
+    //     data: [{
+    //       value: value,
+    //       name: "",
+    //       itemStyle: {
+    //         normal: {
+    //           color: { // 完成的圆环的颜色
+    //             colorStops: [{
+    //               offset: 0,
+    //               color: '#4FADFD' // 0% 处的颜色
+    //             }, {
+    //               offset: 1,
+    //               color: '#28E8FA' // 100% 处的颜色
+    //             }]
+    //           },
+    //         }
+    //       }
+    //     },
+    //       {
+    //         value: 100 - value,
+    //         name: "",
+    //         label: {
+    //           normal: {
+    //             show: false
+    //           }
+    //         },
+    //         itemStyle: {
+    //           normal: {
+    //             color: "#173164"
+    //           }
+    //         }
+    //       }
+    //     ]
+    //   },
+    //
+    //     {
+    //       name: "",
+    //       type: "gauge",
+    //       radius: "58%",
+    //       center: ['50%', '50%'],
+    //       startAngle: 0,
+    //       endAngle: 359.9,
+    //       splitNumber: 8,
+    //       hoverAnimation: true,
+    //       axisTick: {
+    //         show: false
+    //       },
+    //       splitLine: {
+    //         length: 60,
+    //         lineStyle: {
+    //           width: 5,
+    //           color: "#061740"
+    //         }
+    //       },
+    //       axisLabel: {
+    //         show: false
+    //       },
+    //       pointer: {
+    //         show: false
+    //       },
+    //       axisLine: {
+    //         lineStyle: {
+    //           opacity: 0
+    //         }
+    //       },
+    //       detail: {
+    //         show: false
+    //       },
+    //       data: [{
+    //         value: 0,
+    //         name: ""
+    //       }]
+    //     },
+    //
+    //   ]
+    // };
+    //
+    // //获取圆上面某点的坐标(x0,y0表示坐标，r半径，angle角度)
+    // function getCirlPoint(x0, y0, r, angle1) {
+    //   let x1 = x0 + r * Math.cos(angle1 * Math.PI / 180)
+    //   let y1 = y0 + r * Math.sin(angle1 * Math.PI / 180)
+    //   return {
+    //     x: x1,
+    //     y: y1
+    //   }
+    // }
+    //
+    // function draw2() {
+    //   angle2 = angle2+11
+    //   timeOutTask.setOption(optionTask, true)
+    //   //window.requestAnimationFrame(draw);
+    // }
+    //
+    // setInterval(function () {
+    //   //用setInterval做动画感觉有问题
+    //   draw2()
+    // }, 100);
+    // timeOutTask.setOption(optionTask);
+    //
+    //
+    // var numberOfElderlyyu = echarts.init(document.getElementById('numberOfElderly'));
+    //
+    // const data = [11, 182, 191, 234, 290, 330, 310]
+    // const sideData = data.map(item => item + 4.5)
+    //
+    // optiontasks = {
+    //   //设置canvas内部表格的内距
+    //   grid: {
+    //     left: 0,
+    //     right: 0,
+    //     bottom: '0%',
+    //     top: -5,
+    //     containLabel: true
+    //   },
+    //   backgroundColor: "#010d3a",
+    //   tooltip: {
+    //     trigger: 'axis',
+    //     formatter: "{b} : {c}",
+    //     axisPointer: { // 坐标轴指示器，坐标轴触发有效
+    //       type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+    //     }
+    //   },
+    //   xAxis: {
+    //     data: ['2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11'],
+    //     //坐标轴
+    //     axisLine: {
+    //       lineStyle: {
+    //         color: '#3eb2e8'
+    //       }
+    //     },
+    //     //坐标值标注
+    //     axisLabel: {
+    //       show: true,
+    //       textStyle: {
+    //         color: '#fff',
+    //       }
+    //     }
+    //   },
+    //   yAxis: {
+    //     //坐标轴
+    //     axisLine: {
+    //       show: false
+    //     },
+    //     //坐标值标注
+    //     axisLabel: {
+    //       show: true,
+    //       textStyle: {
+    //         color: '#fff',
+    //       }
+    //     },
+    //     //分格线
+    //     splitLine: {
+    //       lineStyle: {
+    //         color: '#4784e8'
+    //       }
+    //     }
+    //   },
+    //   series: [{
+    //     name: 'a',
+    //     tooltip: {
+    //       show: false
+    //     },
+    //     type: 'bar',
+    //     barWidth: 24.5,
+    //     itemStyle: {
+    //       normal: {
+    //         color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+    //           offset: 0,
+    //           color: "#0B4EC3" // 0% 处的颜色
+    //         }, {
+    //           offset: 0.6,
+    //           color: "#138CEB" // 60% 处的颜色
+    //         }, {
+    //           offset: 1,
+    //           color: "#17AAFE" // 100% 处的颜色
+    //         }], false)
+    //       }
+    //     },
+    //     data: data,
+    //     barGap: 0
+    //   }, {
+    //     type: 'bar',
+    //     barWidth: 4,
+    //     itemStyle: {
+    //       normal: {
+    //         color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+    //           offset: 0,
+    //           color: "#09337C" // 0% 处的颜色
+    //         }, {
+    //           offset: 0.6,
+    //           color: "#0761C0" // 60% 处的颜色
+    //         }, {
+    //           offset: 1,
+    //           color: "#0575DE" // 100% 处的颜色
+    //         }], false)
+    //       }
+    //     },
+    //     barGap: 0,
+    //     data: sideData
+    //   }, {
+    //     name: 'b',
+    //     tooltip: {
+    //       show: false
+    //     },
+    //     type: 'pictorialBar',
+    //     itemStyle: {
+    //       borderWidth: 0,
+    //       borderColor: '#0571D5',
+    //       color: '#1779E0'
+    //     },
+    //     symbol: 'path://M 0,0 l 120,0 l -30,60 l -120,0 z',
+    //     symbolSize: ['30', '12'],
+    //     symbolOffset: ['0', '-11'],
+    //     //symbolRotate: -5,
+    //     symbolPosition: 'end',
+    //     data: data,
+    //     z: 3
+    //   }]
+    // };
+    // numberOfElderlyyu.setOption(optiontasks);
 
 
 
@@ -1960,6 +2342,23 @@
     } else {
       tableContent.style.display = 'none';
       addMarkerBtn.textContent = '+'; // 当表格隐藏时，按钮文本变成加号
+    }
+  });
+
+
+  var adddataBtn = document.getElementById('data-btn');
+  // 获取表格内容元素
+  var dataContent = document.querySelector('.chart-wrapper');
+
+  // 添加点击事件处理程序
+  adddataBtn.addEventListener('click', function() {
+    // 切换表格的显示状态
+    if (dataContent.style.display === 'none') {
+      dataContent.style.display = 'block';
+      adddataBtn.textContent = '-'; // 当表格显示时，按钮文本变成减号
+    } else {
+      dataContent.style.display = 'none';
+      adddataBtn.textContent = '+'; // 当表格隐藏时，按钮文本变成加号
     }
   });
 
