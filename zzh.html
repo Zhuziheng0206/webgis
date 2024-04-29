@@ -1,362 +1,348 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <title>武汉小区查询系统</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>武汉小区查询系统</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f0f0f0;
-      margin: 0;
-      padding: 0;
-    }
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
 
-
-
-    .container {
-      display: flex;
-      justify-content: flex-start; /* 从容器的起始位置开始排列 */
-      align-items: flex-start; /* 从容器的起始位置开始排列 */
-      flex-wrap: wrap;
-    }
+        .container {
+            display: flex;
+            justify-content: flex-start; /* 从容器的起始位置开始排列 */
+            align-items: flex-start; /* 从容器的起始位置开始排列 */
+            flex-wrap: wrap;
+        }
 
 
-    #map {
-      flex: 1; /* 占据剩余空间 */
-      height: 700px;
-    }
+        #map {
+            flex: 1; /* 占据剩余空间 */
+            height: 700px;
+        }
 
-    #infoBox {
-      display: flex;
-      background-color: white;
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 15%;
-      height: 30%; /* 保持与地图相同的高度 */
-    }
-    .table-content {
-      display: none; /* 初始时隐藏表格 */
-      position: absolute; /* 绝对定位 */
-      top: 50%; /* 使表格垂直居中 */
-      transform: translateY(-50%); /* 使表格垂直居中 */
-      max-height: 700px; /* 表格最大高度为地图的高度 */
-      min-height: 350px;
-      /*overflow-y: auto; !* 垂直滚动条 *!*/
-      z-index: 999; /* 确保表格显示在其他内容上方 */
-      background: white;
+        #infoBox {
+            display: flex;
+            background-color: white;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 15%;
+            height: 30%; /* 保持与地图相同的高度 */
+        }
+        .table-content {
+            display: none; /* 初始时隐藏表格 */
+            position: absolute; /* 绝对定位 */
+            top: 50%; /* 使表格垂直居中 */
+            transform: translateY(-50%); /* 使表格垂直居中 */
+            max-height: 700px; /* 表格最大高度为地图的高度 */
+            min-height: 350px;
+            /*overflow-y: auto; !* 垂直滚动条 *!*/
+            z-index: 999; /* 确保表格显示在其他内容上方 */
+            background: white;
 
-    }
+        }
 
 
-    #data-table {
-      width: 100%; /* 调整表格宽度 */
-      max-height: 100%; /* 设置表格最大高度 */
-      border-collapse: collapse;
-    }
+        #data-table {
+            width: 100%; /* 调整表格宽度 */
+            max-height: 100%; /* 设置表格最大高度 */
+            border-collapse: collapse;
+        }
 
-    #data-table th, #data-table td {
-      border: 1px solid #dddddd;
-      padding: 8px;
-      text-align: center;
-    }
+        #data-table th, #data-table td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
 
-    #data-table th {
-      background-color: #f2f2f2;
-    }
+        #data-table th {
+            background-color: #f2f2f2;
+        }
 
 
 
-    #prev-page {
-      background-color: green;
-      margin-right: 10px;
-      color: white;
-      border-radius: 20px; /* 设置圆角半径为按钮高度的一半 */
-      padding: 5px 10px; /* 调整按钮内边距以保持椭圆形外观 */
-      border: none; /* 去除按钮边框 */
-      cursor: pointer;
-    }
-    #next-page{
-      background-color: green;
-      margin-left: 10px;
-      margin-right: 10px;
-      color: white;
-      border-radius: 20px; /* 设置圆角半径为按钮高度的一半 */
-      padding: 5px 10px; /* 调整按钮内边距以保持椭圆形外观 */
-      border: none; /* 去除按钮边框 */
-      cursor: pointer;
-    }
+        #prev-page {
+            background-color: green;
+            margin-right: 10px;
+            color: white;
+            border-radius: 20px; /* 设置圆角半径为按钮高度的一半 */
+            padding: 5px 10px; /* 调整按钮内边距以保持椭圆形外观 */
+            border: none; /* 去除按钮边框 */
+            cursor: pointer;
+        }
+        #next-page{
+            background-color: green;
+            margin-left: 10px;
+            margin-right: 10px;
+            color: white;
+            border-radius: 20px; /* 设置圆角半径为按钮高度的一半 */
+            padding: 5px 10px; /* 调整按钮内边距以保持椭圆形外观 */
+            border: none; /* 去除按钮边框 */
+            cursor: pointer;
+        }
 
-    #data-table tbody tr:nth-child(odd) {
-      background-color: #ffffff;
-    }
+        #data-table tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
 
-    #data-table tbody tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
+        #data-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
 
-    /*.pagination {*/
-    /*    margin-top: 10px;*/
-    /*    position: relative;*/
-    /*    display: flex;*/
-    /*    justify-content: center;*/
-    /*    align-items: center;*/
-    /*}*/
+        /*.pagination {*/
+        /*    margin-top: 10px;*/
+        /*    position: relative;*/
+        /*    display: flex;*/
+        /*    justify-content: center;*/
+        /*    align-items: center;*/
+        /*}*/
 
-    .pagination button {
-      /*margin: 0 5px;*/
-      padding: 5px 10px;
-      border: 1px solid #dddddd;
-      background-color: #ffffff;
-      cursor: pointer;
-    }
-    /* 按钮样式 */
-    /*.add-button {*/
-    /*    padding: 10px 20px;*/
-    /*    font-size: 16px;*/
-    /*    border: none;*/
-    /*    border-radius: 5px;*/
-    /*    background-color: mediumpurple;*/
-    /*    color: white;*/
-    /*    cursor: pointer;*/
-    /*    margin-right: 10px;*/
-    /*}*/
-    .chuansong {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      background-color: dodgerblue;
-      color: white;
-      cursor: pointer;
-      margin-right: 10px;
-    }
+        .pagination button {
+            /*margin: 0 5px;*/
+            padding: 5px 10px;
+            border: 1px solid #dddddd;
+            background-color: #ffffff;
+            cursor: pointer;
+        }
+        /* 按钮样式 */
+        /*.add-button {*/
+        /*    padding: 10px 20px;*/
+        /*    font-size: 16px;*/
+        /*    border: none;*/
+        /*    border-radius: 5px;*/
+        /*    background-color: mediumpurple;*/
+        /*    color: white;*/
+        /*    cursor: pointer;*/
+        /*    margin-right: 10px;*/
+        /*}*/
+        .chuansong {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: dodgerblue;
+            color: white;
+            cursor: pointer;
+            margin-right: 10px;
+        }
 
-    /*.add-button:hover {*/
-    /*    background-color: purple;*/
-    /*}*/
-    .chuansong:hover{
-      background-color:blue;
-    }
-    /* 输入框样式 */
-    input[type="text"] {
-      padding: 8px;
-      margin-right: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
+        /*.add-button:hover {*/
+        /*    background-color: purple;*/
+        /*}*/
+        .chuansong:hover{
+            background-color:blue;
+        }
+        /* 输入框样式 */
+        input[type="text"] {
+            padding: 8px;
+            margin-right: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
 
-    /* 下拉菜单样式 */
-    select {
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
+        /* 下拉菜单样式 */
+        select {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
 
-    /* 距离信息样式 */
-    .distance-info {
-      font-size: 16px;
-      margin-right: 10px;
-    }
+        /* 距离信息样式 */
+        .distance-info {
+            font-size: 16px;
+            margin-right: 10px;
+        }
 
-    /* 容器样式 */
-    /*.container {*/
-    /*  display: flex;*/
-    /*  justify-content: center;*/
-    /*  align-items: center;*/
-    /*  flex-wrap: wrap;*/
-    /*}*/
+        /* 容器样式 */
+        /*.container {*/
+        /*  display: flex;*/
+        /*  justify-content: center;*/
+        /*  align-items: center;*/
+        /*  flex-wrap: wrap;*/
+        /*}*/
 
-    /* 分隔符间距 */
-    .container > * {
-      margin-bottom: 10px;
-    }
+        /* 分隔符间距 */
+        .container > * {
+            margin-bottom: 10px;
+        }
 
-    .pagination button:hover {
-      background-color: #f2f2f2;
-    }
+        .pagination button:hover {
+            background-color: #f2f2f2;
+        }
 
-    .action-buttons button {
-      margin-right: 5px;
-      padding: 8px 15px;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
+        .action-buttons button {
+            margin-right: 5px;
+            padding: 8px 15px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
 
-    .action-buttons button:hover {
-      background-color: #45a049;
-    }
-    /*.add-button {*/
-    /*//margin-top: 5px;*/
-    /*//margin-bottom: 10px;*/
-    /*  background-color: #45a049;*/
-    /*}*/
+        .action-buttons button:hover {
+            background-color: #45a049;
+        }
+        /*.add-button {*/
+        /*//margin-top: 5px;*/
+        /*//margin-bottom: 10px;*/
+        /*  background-color: #45a049;*/
+        /*}*/
 
-    .zzh{
-      height:500px;
-    }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
+        }
 
-    .modal {
-      display: none; /* Hidden by default */
-      position: fixed; /* Stay in place */
-      z-index: 1; /* Sit on top */
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto; /* Enable scroll if needed */
-      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-      padding-top: 60px;
-    }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px; /* 增加内边距 */
+            margin-left: 650px;
+            border: 1px solid #888;
+            margin-top: 10px;
+            width: 30%;
+            height: 50%; /* Could be more or less, depending on screen size */
+            z-index: 9999;
+        }
+        .add-marker-btn {
+            position: absolute;
+            top: 50px; /* 调整按钮距离顶部的距离 */
+            right: 10px; /* 调整按钮距离右侧的距离 */
+            width: 30px; /* 按钮宽度 */
+            height: 30px; /* 按钮高度 */
+            border-radius: 50%; /* 变成圆形 */
+            background-color: mediumpurple; /* 紫色背景 */
+            z-index: 999; /* 确保按钮位于地图之上 */
+            color: white; /* 文本颜色 */
+            font-size: 20px; /* 文本大小 */
+            border: none; /* 移除按钮边框 */
+            cursor: pointer; /* 鼠标指针形状 */
+        }
+        .add-echarts-btn{
+            position: absolute;
+            top: 90px; /* 调整按钮距离顶部的距离 */
+            right: 10px; /* 调整按钮距离右侧的距离 */
+            width: 30px; /* 按钮宽度 */
+            height: 30px; /* 按钮高度 */
+            border-radius: 50%; /* 变成圆形 */
+            background-color: mediumpurple; /* 紫色背景 */
+            z-index: 999; /* 确保按钮位于地图之上 */
+            color: white; /* 文本颜色 */
+            font-size: 20px; /* 文本大小 */
+            border: none; /* 移除按钮边框 */
+            cursor: pointer; /* 鼠标指针形状 */
+        }
+        .add-re-btn{
+            position: absolute;
+            top: 130px; /* 调整按钮距离顶部的距离 */
+            right: 10px; /* 调整按钮距离右侧的距离 */
+            width: 30px; /* 按钮宽度 */
+            height: 30px; /* 按钮高度 */
+            border-radius: 50%; /* 变成圆形 */
+            background-color: mediumpurple; /* 紫色背景 */
+            z-index: 999; /* 确保按钮位于地图之上 */
+            color: white; /* 文本颜色 */
+            font-size: 20px; /* 文本大小 */
+            border: none; /* 移除按钮边框 */
+            cursor: pointer; /* 鼠标指针形状 */
+        }
+        .add-marker-btn1 {
+            position: absolute;
+            top: 100px; /* 调整按钮距离顶部的距离 */
+            right: 10px; /* 调整按钮距离右侧的距离 */
+            width: 30px; /* 按钮宽度 */
+            height: 30px; /* 按钮高度 */
+            border-radius: 50%; /* 变成圆形 */
+            background-color: mediumpurple; /* 紫色背景 */
+            z-index: 999; /* 确保按钮位于地图之上 */
+            color: white; /* 文本颜色 */
+            font-size: 20px; /* 文本大小 */
+            border: none; /* 移除按钮边框 */
+            cursor: pointer; /* 鼠标指针形状 */
+        }
+        /*.chart-container {*/
+        /*    width: 400px; !* 图表容器宽度 *!*/
+        /*    height: 300px; !* 图表容器高度 *!*/
+        /*    position: absolute;*/
+        /*    top: 100px; !* 图表容器距离顶部的距离 *!*/
+        /*    right: 10px; !* 图表容器距离右侧的距离 *!*/
+        /*    border: 1px solid #ccc; !* 图表容器边框 *!*/
+        /*}*/
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
 
-    /* Modal Content/Box */
-    .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto; /* 15% from the top and centered */
-      padding: 20px; /* 增加内边距 */
-      margin-left: 650px;
-      border: 1px solid #888;
-      margin-top: 10px;
-      width: 30%;
-      height: 50%; /* Could be more or less, depending on screen size */
-      z-index: 9999;
-    }
-    .add-marker-btn {
-      position: absolute;
-      top: 50px; /* 调整按钮距离顶部的距离 */
-      right: 10px; /* 调整按钮距离右侧的距离 */
-      width: 30px; /* 按钮宽度 */
-      height: 30px; /* 按钮高度 */
-      border-radius: 50%; /* 变成圆形 */
-      background-color: mediumpurple; /* 紫色背景 */
-      z-index: 999; /* 确保按钮位于地图之上 */
-      color: white; /* 文本颜色 */
-      font-size: 20px; /* 文本大小 */
-      border: none; /* 移除按钮边框 */
-      cursor: pointer; /* 鼠标指针形状 */
-    }
-    .add-echarts-btn{
-      position: absolute;
-      top: 90px; /* 调整按钮距离顶部的距离 */
-      right: 10px; /* 调整按钮距离右侧的距离 */
-      width: 30px; /* 按钮宽度 */
-      height: 30px; /* 按钮高度 */
-      border-radius: 50%; /* 变成圆形 */
-      background-color: mediumpurple; /* 紫色背景 */
-      z-index: 999; /* 确保按钮位于地图之上 */
-      color: white; /* 文本颜色 */
-      font-size: 20px; /* 文本大小 */
-      border: none; /* 移除按钮边框 */
-      cursor: pointer; /* 鼠标指针形状 */
-    }
-    .add-re-btn{
-      position: absolute;
-      top: 130px; /* 调整按钮距离顶部的距离 */
-      right: 10px; /* 调整按钮距离右侧的距离 */
-      width: 30px; /* 按钮宽度 */
-      height: 30px; /* 按钮高度 */
-      border-radius: 50%; /* 变成圆形 */
-      background-color: mediumpurple; /* 紫色背景 */
-      z-index: 999; /* 确保按钮位于地图之上 */
-      color: white; /* 文本颜色 */
-      font-size: 20px; /* 文本大小 */
-      border: none; /* 移除按钮边框 */
-      cursor: pointer; /* 鼠标指针形状 */
-    }
-    .add-marker-btn1 {
-      position: absolute;
-      top: 100px; /* 调整按钮距离顶部的距离 */
-      right: 10px; /* 调整按钮距离右侧的距离 */
-      width: 30px; /* 按钮宽度 */
-      height: 30px; /* 按钮高度 */
-      border-radius: 50%; /* 变成圆形 */
-      background-color: mediumpurple; /* 紫色背景 */
-      z-index: 999; /* 确保按钮位于地图之上 */
-      color: white; /* 文本颜色 */
-      font-size: 20px; /* 文本大小 */
-      border: none; /* 移除按钮边框 */
-      cursor: pointer; /* 鼠标指针形状 */
-    }
-    /*.chart-container {*/
-    /*    width: 400px; !* 图表容器宽度 *!*/
-    /*    height: 300px; !* 图表容器高度 *!*/
-    /*    position: absolute;*/
-    /*    top: 100px; !* 图表容器距离顶部的距离 *!*/
-    /*    right: 10px; !* 图表容器距离右侧的距离 *!*/
-    /*    border: 1px solid #ccc; !* 图表容器边框 *!*/
-    /*}*/
-    /* The Close Button */
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
-  </style>
-  <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/css/ol.css">
-  <script src="https://cdn.jsdelivr.net/npm/ol-layerswitcher@3.3.1/dist/ol-layerswitcher.js"></script>
-  <!-- 引入 OpenLayers 库 -->
-  <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
-  <!-- 引入 ol-layerswitcher 库 -->
-  <script src="https://cdn.jsdelivr.net/npm/ol-layerswitcher@3.3.1/dist/ol-layerswitcher.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol-layerswitcher@3.3.1/dist/ol-layerswitcher.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@6.9.0/dist/ol.css" type="text/css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=QzL7Q1ss7GlBZvIeXoIsvL4DbjGDUSNO"></script>
-  <script src="https://unpkg.com/ol-echarts/dist/ol-echarts.js"></script>
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/css/ol.css">
+    <script src="https://cdn.jsdelivr.net/npm/ol-layerswitcher@3.3.1/dist/ol-layerswitcher.js"></script>
+    <!-- 引入 OpenLayers 库 -->
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
+    <!-- 引入 ol-layerswitcher 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/ol-layerswitcher@3.3.1/dist/ol-layerswitcher.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol-layerswitcher@3.3.1/dist/ol-layerswitcher.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@6.9.0/dist/ol.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=QzL7Q1ss7GlBZvIeXoIsvL4DbjGDUSNO"></script>
+    <script src="https://unpkg.com/ol-echarts/dist/ol-echarts.js"></script>
 
 
 
-  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/openlayers/dist/ol.css"> -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/openlayers/dist/ol.js"></script> -->
-  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/openlayers/dist/ol.css"> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/openlayers/dist/ol.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 
-  <script type="text/javascript" src="https://cdn.staticfile.net/jquery/3.7.1/jquery.min.js"></script>
-  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
+    <script type="text/javascript" src="https://cdn.staticfile.net/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
 
-  <!--   Uncomment this line if you want to dataTool extension-->
-  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/extension/dataTool.min.js"></script>
+    <!--   Uncomment this line if you want to dataTool extension-->
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/extension/dataTool.min.js"></script>
 
-  <!--  Uncomment this line if you want to use gl extension-->
-  <script type="text/javascript" src="https://registry.npmmirror.com/echarts-gl/2/files/dist/echarts-gl.min.js"></script>
+    <!--  Uncomment this line if you want to use gl extension-->
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts-gl/2/files/dist/echarts-gl.min.js"></script>
 
-  <!--  Uncomment this line if you want to echarts-stat extension-->
-  <script type="text/javascript" src="https://registry.npmmirror.com/echarts-stat/latest/files/dist/ecStat.min.js"></script>
+    <!--  Uncomment this line if you want to echarts-stat extension-->
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts-stat/latest/files/dist/ecStat.min.js"></script>
 
-  <!--  Uncomment this line if you want to use map-->
-  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/4.9.0/files/map/js/china.js"></script>
-  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/4.9.0/files/map/js/world.js"></script>
+    <!--  Uncomment this line if you want to use map-->
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts/4.9.0/files/map/js/china.js"></script>
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts/4.9.0/files/map/js/world.js"></script>
 
-  <!--  Uncomment these two lines if you want to use bmap extension-->
-  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=hjqgxZicWBBHs7pD4BoUhXBHze7sj2bI"></script>
-  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/extension/bmap.min.js"></script>
-
-
-<!--  数据分析-->
-  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
-  <script src="https://cdn.staticfile.org/echarts/4.5.0/echarts.min.js"></script>
-  <script type="text/javascript" src="./js/timeouttask.js"></script>
-
-
-
+    <!--  Uncomment these two lines if you want to use bmap extension-->
+      <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=hjqgxZicWBBHs7pD4BoUhXBHze7sj2bI"></script>
+      <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/extension/bmap.min.js"></script>
+    
 </head>
 
 <body>
@@ -366,101 +352,50 @@
 
 <button id="add-re-btn" class="add-re-btn">+</button>
 
-<button class="data" onclick="toggle()">h</button>
-
 <div id="pie-chart-container"  style="display: none;"></div>
 
 
-<!---->
-<div style="position: relative;left:949px;top: 15px;width: 77px;height: 87px; color:#47d8ff">
-  <tbody>
-  <tr>
-    <td bgcolor="#f8f8e5" style="color: #010d3a">
-      <!--width 滚动条宽度   height 滚动条高度   -->
-      <marquee   width="450"  height="200" direction="down"  hspace="40"  vspace="40" scrollamount="3">滚动文字111111111111111111111111111111111111111111111111111111111111111111111111111 滚动文字滚动文字滚动文字滚动文字滚动文字滚动文字</marquee>
-    </td>
-  </tr>
-  </tbody>
-</div>
-
-<!--完成任务七天数量div块-->
-<div id="dataAla" class="zzh"></div>
-  <div style="position: relative;left:949px;top: 15px;width: 77px;height: 87px;">
-    <div style="width: 260px">
-      <font style="font-size: 200%;  position: relative;  left: 50px;  top: 175px;color:#47d8ff" >七天完成任务数量</font>
-    </div>
-    <!-- id就是js的getid      var myChart = echarts.init(document.getElementById('main'));-->
-    <div id="main" style="position: absolute;     left: -171px;  top: 180px; width: 676px; height: 360px;  user-select: none;  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);  padding: 0px;   margin: 0px; border-width: 0px;"></div>
-  </div>
-
-  <!--警报任务div块-->
-  <div>
-    <font style="font-size: 176%; position: relative; left: 86px; top: -181px;color: #47d8ff;color:#47d8ff" >警报任务</font>
-    <div id="AlertTaskJSs"  style=" position: absolute;left:-109px;top: 23px;width: 516px;height: 274px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>
-  </div>
-
-  <!--执行任务div块-->
-  <div>
-    <font style="    font-size: 176%; position: relative;  left: 435px; top: -217px;color:#47d8ff" >执行任务</font>
-    <div  id="ExecutetaskJS"  style=" position: absolute;left: 240px; top: 22px;;width: 516px;height: 274px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>
-  </div>
-
-  <!--超时任务div块-->
-  <div>
-    <font style="font-size: 176%;position: relative;left: 750px;top: -254px;color: #47d8ff;" >超时任务</font>
-    <div id="timeOutTaskJS"  style="position: absolute;left: 555px; top: 22px;width: 516px;height: 274px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>
-  </div>
-
-
-  <!--七天新增老人div块-->
-  <font style="font-size: 200%;  position: relative;  left: 237px; top: -5px;color:#47d8ff" >七天新增老人数量</font>
-  <div id="numberOfElderly"  style="position: absolute;left: 89px; top: 371px;  width: 586px; height: 305px;user-select: none;-webkit-tap-highlight-color: transparent;padding: 0px; margin: 0px;   border-width: 0px;"></div>
-</div>
-<!---->
-
-
-
 <div class="container">
-  <div id="map"></div>
-  <div id="infoBox"></div>
+    <div id="map"></div>
+    <div id="infoBox"></div>
 </div>
 <div class="table-content">
-  <table id="data-table">
-    <thead>
-    <tr>
-      <th>社区名</th>
-      <th>经度</th>
-      <th>纬度</th>
-      <th>操作</th> <!-- 新添加的列 -->
-    </tr>
-    </thead>
-    <tbody id="data-table-body">
-    </tbody>
-  </table>
-  <!--        <button class="add-button" id="add-button">增加小区</button> &lt;!&ndash; 新增加的按钮 &ndash;&gt;-->
-  <!--        <div style="margin-bottom: 10px;margin-top: 10px">图层切换：-->
-  <!--            <select id="layerSelect" onchange="changeLayer()">-->
-  <!--                <option value="">选择图层</option>-->
-  <!--            </select>-->
-  <!--        </div>-->
+    <table id="data-table">
+        <thead>
+        <tr>
+            <th>社区名</th>
+            <th>经度</th>
+            <th>纬度</th>
+            <th>操作</th> <!-- 新添加的列 -->
+        </tr>
+        </thead>
+        <tbody id="data-table-body">
+        </tbody>
+    </table>
+<!--        <button class="add-button" id="add-button">增加小区</button> &lt;!&ndash; 新增加的按钮 &ndash;&gt;-->
+<!--        <div style="margin-bottom: 10px;margin-top: 10px">图层切换：-->
+<!--            <select id="layerSelect" onchange="changeLayer()">-->
+<!--                <option value="">选择图层</option>-->
+<!--            </select>-->
+<!--        </div>-->
 
-  <!-- <div id="layerSwitcher" class="ol-control"></div> -->
+        <!-- <div id="layerSwitcher" class="ol-control"></div> -->
 
-  <!--        传送目的地：<input type="text" id="location-input" placeholder="输入目的地">-->
-  <!--        &lt;!&ndash; Button to trigger geolocation &ndash;&gt;-->
-  <!--        <button onclick="flyToDestination()" style="margin-bottom: 5px" class="chuansong">传送</button>-->
-  <!--        <h4>点击地图两个点测量距离：</h4>-->
-  <!--        <div id="distance-info" class="distance-info" s></div>-->
+<!--        传送目的地：<input type="text" id="location-input" placeholder="输入目的地">-->
+<!--        &lt;!&ndash; Button to trigger geolocation &ndash;&gt;-->
+<!--        <button onclick="flyToDestination()" style="margin-bottom: 5px" class="chuansong">传送</button>-->
+<!--        <h4>点击地图两个点测量距离：</h4>-->
+<!--        <div id="distance-info" class="distance-info" s></div>-->
 
-  <div class="pagination">
-    <button id="prev-page">Previous</button>
-    <span>Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
-    <button id="next-page">&nbsp &nbsp Next &nbsp &nbsp</button>
-    <span> <select id="items-per-page">
+    <div class="pagination">
+        <button id="prev-page">Previous</button>
+        <span>Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
+        <button id="next-page">&nbsp &nbsp Next &nbsp &nbsp</button>
+        <span> <select id="items-per-page">
         <option value="5" selected>5</option>
         <option value="8" >8</option>
     </select> </span>
-  </div>
+    </div>
 </div>
 <!--<div class="pagination">-->
 <!--    <button id="prev-page">Previous</button>-->
@@ -475,1262 +410,55 @@
 <!-- The Modal -->
 <div id="editModal" class="modal">
 
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>编辑位置信息</h2>
-    <form id="editForm">
-      <div style="margin-bottom: 50px">
-        <label for="editCommunity">社区名:</label>
-        <input type="text" id="editCommunity" name="editCommunity">
-      </div>
-      <div style="margin-bottom: 50px">
-        <label for="editLongitude">经度:</label>
-        <input type="text" id="editLongitude" name="editLongitude">
-      </div>
-      <div style="margin-bottom: 50px">
-        <label for="editLatitude">纬度:</label>
-        <input type="text" id="editLatitude" name="editLatitude">
-      </div>
-      <button type="submit" class="chuansong">保存</button>
-    </form>
-  </div>
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>编辑位置信息</h2>
+        <form id="editForm">
+            <div style="margin-bottom: 50px">
+                <label for="editCommunity">社区名:</label>
+                <input type="text" id="editCommunity" name="editCommunity">
+            </div>
+            <div style="margin-bottom: 50px">
+                <label for="editLongitude">经度:</label>
+                <input type="text" id="editLongitude" name="editLongitude">
+            </div>
+            <div style="margin-bottom: 50px">
+                <label for="editLatitude">纬度:</label>
+                <input type="text" id="editLatitude" name="editLatitude">
+            </div>
+            <button type="submit" class="chuansong">保存</button>
+        </form>
+    </div>
 
 </div>
 
 <!-- The Modal for adding new location -->
 <div id="addModal" class="modal">
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>增加新的小区信息</h2>
-    <form id="addForm">
-      <div style="margin-bottom: 50px">
-        <label for="addCommunity">社区名:</label>
-        <input type="text" id="addCommunity" name="addCommunity">
-      </div>
-      <div style="margin-bottom: 50px">
-        <label for="addLongitude">经度:</label>
-        <input type="text" id="addLongitude" name="addLongitude">
-      </div >
-      <div style="margin-bottom: 50px">
-        <label for="addLatitude">纬度:</label>
-        <input type="text" id="addLatitude" name="addLatitude">
-      </div>
-      <button type="submit" class="chuansong">保存</button>
-    </form>
-  </div>
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>增加新的小区信息</h2>
+        <form id="addForm">
+            <div style="margin-bottom: 50px">
+                <label for="addCommunity">社区名:</label>
+                <input type="text" id="addCommunity" name="addCommunity">
+            </div>
+            <div style="margin-bottom: 50px">
+                <label for="addLongitude">经度:</label>
+                <input type="text" id="addLongitude" name="addLongitude">
+            </div >
+            <div style="margin-bottom: 50px">
+                <label for="addLatitude">纬度:</label>
+                <input type="text" id="addLatitude" name="addLatitude">
+            </div>
+            <button type="submit" class="chuansong">保存</button>
+        </form>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/ol@6.9.0/dist/ol.js"></script>
 <script type="text/javascript">
-
-    // var modulesDiv = document.getElementById('modules');
-    // if (modulesDiv.style.display === 'none') {
-    //   modulesDiv.style.display = 'block';
-    // } else {
-    //   modulesDiv.style.display = 'none';
-    // }
-    var myChart = echarts.init(document.getElementById('main'));
-
-    const CubeLeft = echarts.graphic.extendShape({
-      shape: {
-        x: 20,
-        y: 10
-      },
-      buildPath: function(ctx, shape) {
-        const xAxisPoint = shape.xAxisPoint
-        const c0 = [shape.x, shape.y]
-        const c1 = [shape.x - 9, shape.y - 9]
-        const c2 = [xAxisPoint[0] - 9, xAxisPoint[1] - 9]
-        const c3 = [xAxisPoint[0], xAxisPoint[1]]
-        ctx.moveTo(c0[0], c0[1]).lineTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).closePath()
-      }
-    })
-    const CubeRight = echarts.graphic.extendShape({
-      shape: {
-        x: 10,
-        y: 10
-      },
-      buildPath: function(ctx, shape) {
-        const xAxisPoint = shape.xAxisPoint
-        const c1 = [shape.x, shape.y]
-        const c2 = [xAxisPoint[0], xAxisPoint[1]]
-        const c3 = [xAxisPoint[0] + 18, xAxisPoint[1] - 9]
-        const c4 = [shape.x + 18, shape.y - 9]
-        ctx.moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).lineTo(c4[0], c4[1]).closePath()
-      }
-    })
-    const CubeTop = echarts.graphic.extendShape({
-      shape: {
-        x: 0,
-        y: 0
-      },
-      buildPath: function(ctx, shape) {
-        const c1 = [shape.x, shape.y]
-        const c2 = [shape.x + 18, shape.y - 9]
-        const c3 = [shape.x + 9, shape.y - 18]
-        const c4 = [shape.x - 9, shape.y - 9]
-        ctx.moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).lineTo(c4[0], c4[1]).closePath()
-      }
-    })
-    echarts.graphic.registerShape('CubeLeft', CubeLeft)
-    echarts.graphic.registerShape('CubeRight', CubeRight)
-    echarts.graphic.registerShape('CubeTop', CubeTop)
-    const MAX = [6000, 6000, 6000, 6000, 6000, 5000, 4000, 3000, 2000, 4000, 3000, 2000]
-    const VALUE = [2012, 1230, 3790, 2349, 1654, 1230, 3790, 2349, 1654, 3790, 2349, 1654]
-    option = {
-      // backgroundColor: "#010d3a",
-      title: {
-        text: '',
-        top: 32,
-        left: 18,
-        textStyle: {
-          color: '#00F6FF',
-          fontSize: 24
-        }
-      },
-      /*调整表格大小*/
-      grid: {
-        left: 0,
-        right: 0,
-        bottom: '6%',
-        top: 90,
-        containLabel: true
-      },
-      xAxis: {
-        type: 'category',
-        data: ['德州', '德城区', '陵城区', '禹城市', '乐陵市', '临邑县',
-          '平原县', '夏津县', '武城县', '庆云县', '宁津县', '齐河县'
-        ],
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: 'white'
-          }
-        },
-        offset: 20,
-        axisTick: {
-          show: false,
-          length: 9,
-          alignWithLabel: true,
-          lineStyle: {
-            color: '#7DFFFD'
-          }
-        },
-        axisLabel: {
-          fontSize: 10
-        }
-      },
-      yAxis: {
-        type: 'value',
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: 'white'
-          }
-        },
-        splitLine: {
-          show: false
-        },
-        axisTick: {
-          show: false
-        },
-        axisLabel: {
-          fontSize: 16
-        },
-        boundaryGap: ['20%', '20%']
-      },
-      series: [{
-        type: 'custom',
-        renderItem: function(params, api) {
-          const location = api.coord([api.value(0), api.value(1)])
-          return {
-            type: 'group',
-            children: [{
-              type: 'CubeLeft',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: 'rgba(7,29,97,.6)'
-              }
-            }, {
-              type: 'CubeRight',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: 'rgba(10,35,108,.7)'
-              }
-            }, {
-              type: 'CubeTop',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: 'rgba(11,42,106,.8)'
-              }
-            }]
-          }
-        },
-        data: MAX
-      }, {
-        type: 'custom',
-        renderItem: (params, api) => {
-          const location = api.coord([api.value(0), api.value(1)])
-          return {
-            type: 'group',
-            children: [{
-              type: 'CubeLeft',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0,
-                  color: '#3B80E2'
-                },
-                  {
-                    offset: 1,
-                    color: '#49BEE5'
-                  }
-                ])
-              }
-            }, {
-              type: 'CubeRight',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0,
-                  color: '#3B80E2'
-                },
-                  {
-                    offset: 1,
-                    color: '#49BEE5'
-                  }
-                ])
-              }
-            }, {
-              type: 'CubeTop',
-              shape: {
-                api,
-                xValue: api.value(0),
-                yValue: api.value(1),
-                x: location[0],
-                y: location[1],
-                xAxisPoint: api.coord([api.value(0), 0])
-              },
-              style: {
-                fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0,
-                  color: '#3B80E2'
-                },
-                  {
-                    offset: 1,
-                    color: '#49BEE5'
-                  }
-                ])
-              }
-            }]
-          }
-        },
-        data: VALUE
-      }, {
-        type: 'bar',
-        label: {
-            show: true,
-            position: 'top',
-            formatter: (e) => {
-              switch (e.name) {
-                case '10kV线路':
-                  return VALUE[0]
-                case '公用配变':
-                  return VALUE[1]
-                case '35kV主变':
-                  return VALUE[2]
-                case '水':
-
-              }
-            },
-            fontSize: 16,
-            color: '#38ff9f',
-            offset: [4, -25]
-
-        },
-        itemStyle: {
-          color: 'transparent'
-        },
-        data: MAX
-      }]
-    }
-
-    myChart.setOption(option);
-
-    var AlertTaskJS = echarts.init(document.getElementById('AlertTaskJSs'));
-    let angle = 1;//角度，用来做简单的动画效果的
-    let value = 1111;
-    optionOne = {
-      // backgroundColor:"#010d3a",
-      title: {
-        text: '{a|'+ value +'}{c|}',
-        x: 'center',
-        y: 'center',
-        textStyle: {
-          rich:{
-            a: {
-              fontSize: 48,
-              color: '#29EEF3'
-            },
-
-            c: {
-              fontSize: 20,
-              color: '#ffffff',
-              // padding: [5,0]
-            }
-          }
-        }
-      },
-
-      series: [ {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (0+angle) * Math.PI / 180,
-              endAngle: (90+angle) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (180+angle) * Math.PI / 180,
-              endAngle: (270+angle) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (270+-angle) * Math.PI / 180,
-              endAngle: (40+-angle) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (90+-angle) * Math.PI / 180,
-              endAngle: (220+-angle) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      },{
-        name: "ring5",  //绿点
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          let x0 = api.getWidth() / 2;
-          let y0 = api.getHeight() / 2;
-          let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
-          let point = getCirlPoint(x0, y0, r, (270+-angle))
-          return {
-            type: 'circle',
-            shape: {
-              cx: point.x,
-              cy: point.y,
-              r: 4
-            },
-            style: {
-              stroke: "#0CD3DB",      //绿
-              fill: "#0CD3DB"
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-
-        type: 'pie',
-        radius: ['58%', '45%'],
-        silent: true,
-        clockwise: true,
-        startAngle: 90,
-        z: 0,
-        zlevel: 0,
-        label: {
-          normal: {
-            position: "center",
-
-          }
-        },
-        data: [{
-          value: value,
-          name: "",
-          itemStyle: {
-            normal: {
-              color: { // 完成的圆环的颜色
-                colorStops: [{
-                  offset: 0,
-                  color: '#4FADFD' // 0% 处的颜色
-                }, {
-                  offset: 1,
-                  color: '#28E8FA' // 100% 处的颜色
-                }]
-              },
-            }
-          }
-        },
-          {
-            value: 100-value,
-            name: "",
-            label: {
-              normal: {
-                show: false
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: "#173164"
-              }
-            }
-          }
-        ]
-      },
-
-        {
-          name: "",
-          type: "gauge",
-          radius: "58%",
-          center: ['50%', '50%'],
-          startAngle: 0,
-          endAngle: 359.9,
-          splitNumber: 8,
-          hoverAnimation: true,
-          axisTick: {
-            show: false
-          },
-          splitLine: {
-            length: 60,
-            lineStyle: {
-              width: 5,
-              color: "#061740"
-            }
-          },
-          axisLabel: {
-            show: false
-          },
-          pointer: {
-            show: false
-          },
-          axisLine: {
-            lineStyle: {
-              opacity: 0
-            }
-          },
-          detail: {
-            show: false
-          },
-          data: [{
-            value: 0,
-            name: ""
-          }]
-        },
-
-      ]
-    };
-
-    //获取圆上面某点的坐标(x0,y0表示坐标，r半径，angle角度)
-    function getCirlPoint(x0, y0, r, angle) {
-      let x1 = x0 + r * Math.cos(angle* Math.PI / 180)
-      let y1 = y0 + r * Math.sin(angle * Math.PI / 180)
-      return {
-        x: x1,
-        y: y1
-      }
-    }
-
-    function draw(){
-      angle = angle+11
-      AlertTaskJS.setOption(optionOne, true)
-      //window.requestAnimationFrame(draw);
-    }
-
-    setInterval(function() {
-      //用setInterval做动画感觉有问题
-      draw()
-    }, 100);
-
-    AlertTaskJS.setOption(optionOne);
-
-
-    var ExecutetaskJSS = echarts.init(document.getElementById('ExecutetaskJS'));
-    let angle1 = 0;//角度，用来做简单的动画效果的
-    let value1 = 222;
-    optionTwo = {
-      // backgroundColor:"#010d3a",
-      title: {
-        text: '{a|'+ value1 +'}{c|}',
-        x: 'center',
-        y: 'center',
-        textStyle: {
-          rich:{
-            a: {
-              fontSize: 48,
-              color: '#29EEF3'
-            },
-
-            c: {
-              fontSize: 20,
-              color: '#ffffff',
-              // padding: [5,0]
-            }
-          }
-        }
-      },
-
-      series: [ {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (0+angle1) * Math.PI / 180,
-              endAngle: (90+angle1) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (180+angle1) * Math.PI / 180,
-              endAngle: (270+angle1) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (270+-angle1) * Math.PI / 180,
-              endAngle: (40+-angle1) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (90+-angle1) * Math.PI / 180,
-              endAngle: (220+-angle1) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          let x0 = api.getWidth() / 2;
-          let y0 = api.getHeight() / 2;
-          let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
-          let point = getCirlPoint(x0, y0, r, (90+-angle1))
-          return {
-            type: 'circle',
-            shape: {
-              cx: point.x,
-              cy: point.y,
-              r: 4
-            },
-            style: {
-              stroke: "#0CD3DB",//粉
-              fill: "#0CD3DB"
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",  //绿点
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function(params, api) {
-          let x0 = api.getWidth() / 2;
-          let y0 = api.getHeight() / 2;
-          let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
-          let point = getCirlPoint(x0, y0, r, (270+-angle1))
-          return {
-            type: 'circle',
-            shape: {
-              cx: point.x,
-              cy: point.y,
-              r: 4
-            },
-            style: {
-              stroke: "#0CD3DB",      //绿
-              fill: "#0CD3DB"
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-
-        type: 'pie',
-        radius: ['58%', '45%'],
-        silent: true,
-        clockwise: true,
-        startAngle: 90,
-        z: 0,
-        zlevel: 0,
-        label: {
-          normal: {
-            position: "center",
-
-          }
-        },
-        data: [{
-          value: value,
-          name: "",
-          itemStyle: {
-            normal: {
-              color: { // 完成的圆环的颜色
-                colorStops: [{
-                  offset: 0,
-                  color: '#4FADFD' // 0% 处的颜色
-                }, {
-                  offset: 1,
-                  color: '#28E8FA' // 100% 处的颜色
-                }]
-              },
-            }
-          }
-        },
-          {
-            value: 100-value,
-            name: "",
-            label: {
-              normal: {
-                show: false
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: "#173164"
-              }
-            }
-          }
-        ]
-      },
-
-        {
-          name: "",
-          type: "gauge",
-          radius: "58%",
-          center: ['50%', '50%'],
-          startAngle: 0,
-          endAngle: 359.9,
-          splitNumber: 8,
-          hoverAnimation: true,
-          axisTick: {
-            show: false
-          },
-          splitLine: {
-            length: 60,
-            lineStyle: {
-              width: 5,
-              color: "#061740"
-            }
-          },
-          axisLabel: {
-            show: false
-          },
-          pointer: {
-            show: false
-          },
-          axisLine: {
-            lineStyle: {
-              opacity: 0
-            }
-          },
-          detail: {
-            show: false
-          },
-          data: [{
-            value: 0,
-            name: ""
-          }]
-        },
-
-      ]
-    };
-
-    //获取圆上面某点的坐标(x0,y0表示坐标，r半径，angle角度)
-    function getCirlPoint(x0, y0, r, angle1) {
-      let x1 = x0 + r * Math.cos(angle1 * Math.PI / 180)
-      let y1 = y0 + r * Math.sin(angle1 * Math.PI / 180)
-      return {
-        x: x1,
-        y: y1
-      }
-    }
-
-    function draw1(){
-      angle1 = angle1+11
-      ExecutetaskJSS.setOption(optionTwo, true)
-      //window.requestAnimationFrame(draw);
-    }
-
-    setInterval(function() {
-      //用setInterval做动画感觉有问题
-      draw1()
-    }, 100);
-    ExecutetaskJSS.setOption(optionTwo);
-
-
-    var timeOutTask = echarts.init(document.getElementById('timeOutTaskJS'));
-    let angle2 = 0;//角度，用来做简单的动画效果的
-    let value2 = 12;
-    optionTask = {
-      // backgroundColor: "#010d3a",
-      title: {
-        text: '{a|' + value2 + '}{c|}',
-        x: 'center',
-        y: 'center',
-        textStyle: {
-          rich: {
-            a: {
-              fontSize: 48,
-              color: '#29EEF3'
-            },
-
-            c: {
-              fontSize: 20,
-              color: '#ffffff',
-              // padding: [5,0]
-            }
-          }
-        }
-      },
-
-      series: [{
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (0 + angle2) * Math.PI / 180,
-              endAngle: (90 + angle2) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.6,
-              startAngle: (180 + angle2) * Math.PI / 180,
-              endAngle: (270 + angle2) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (270 + -angle2) * Math.PI / 180,
-              endAngle: (40 + -angle2) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          return {
-            type: 'arc',
-            shape: {
-              cx: api.getWidth() / 2,
-              cy: api.getHeight() / 2,
-              r: Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65,
-              startAngle: (90 + -angle2) * Math.PI / 180,
-              endAngle: (220 + -angle2) * Math.PI / 180
-            },
-            style: {
-              stroke: "#0CD3DB",
-              fill: "transparent",
-              lineWidth: 1.5
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          let x0 = api.getWidth() / 2;
-          let y0 = api.getHeight() / 2;
-          let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
-          let point = getCirlPoint(x0, y0, r, (90 + -angle1))
-          return {
-            type: 'circle',
-            shape: {
-              cx: point.x,
-              cy: point.y,
-              r: 4
-            },
-            style: {
-              stroke: "#0CD3DB",//粉
-              fill: "#0CD3DB"
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-        name: "ring5",  //绿点
-        type: 'custom',
-        coordinateSystem: "none",
-        renderItem: function (params, api) {
-          let x0 = api.getWidth() / 2;
-          let y0 = api.getHeight() / 2;
-          let r = Math.min(api.getWidth(), api.getHeight()) / 2 * 0.65;
-          let point = getCirlPoint(x0, y0, r, (270 + -angle1))
-          return {
-            type: 'circle',
-            shape: {
-              cx: point.x,
-              cy: point.y,
-              r: 4
-            },
-            style: {
-              stroke: "#0CD3DB",      //绿
-              fill: "#0CD3DB"
-            },
-            silent: true
-          };
-        },
-        data: [0]
-      }, {
-
-        type: 'pie',
-        radius: ['58%', '45%'],
-        silent: true,
-        clockwise: true,
-        startAngle: 90,
-        z: 0,
-        zlevel: 0,
-        label: {
-          normal: {
-            position: "center",
-
-          }
-        },
-        data: [{
-          value: value,
-          name: "",
-          itemStyle: {
-            normal: {
-              color: { // 完成的圆环的颜色
-                colorStops: [{
-                  offset: 0,
-                  color: '#4FADFD' // 0% 处的颜色
-                }, {
-                  offset: 1,
-                  color: '#28E8FA' // 100% 处的颜色
-                }]
-              },
-            }
-          }
-        },
-          {
-            value: 100 - value,
-            name: "",
-            label: {
-              normal: {
-                show: false
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: "#173164"
-              }
-            }
-          }
-        ]
-      },
-
-        {
-          name: "",
-          type: "gauge",
-          radius: "58%",
-          center: ['50%', '50%'],
-          startAngle: 0,
-          endAngle: 359.9,
-          splitNumber: 8,
-          hoverAnimation: true,
-          axisTick: {
-            show: false
-          },
-          splitLine: {
-            length: 60,
-            lineStyle: {
-              width: 5,
-              color: "#061740"
-            }
-          },
-          axisLabel: {
-            show: false
-          },
-          pointer: {
-            show: false
-          },
-          axisLine: {
-            lineStyle: {
-              opacity: 0
-            }
-          },
-          detail: {
-            show: false
-          },
-          data: [{
-            value: 0,
-            name: ""
-          }]
-        },
-
-      ]
-    };
-
-    //获取圆上面某点的坐标(x0,y0表示坐标，r半径，angle角度)
-    function getCirlPoint(x0, y0, r, angle1) {
-      let x1 = x0 + r * Math.cos(angle1 * Math.PI / 180)
-      let y1 = y0 + r * Math.sin(angle1 * Math.PI / 180)
-      return {
-        x: x1,
-        y: y1
-      }
-    }
-
-    function draw2() {
-      angle2 = angle2+11
-      timeOutTask.setOption(optionTask, true)
-      //window.requestAnimationFrame(draw);
-    }
-
-    setInterval(function () {
-      //用setInterval做动画感觉有问题
-      draw2()
-    }, 100);
-    timeOutTask.setOption(optionTask);
-
-
-    var numberOfElderlyyu = echarts.init(document.getElementById('numberOfElderly'));
-
-    const data = [11, 182, 191, 234, 290, 330, 310]
-    const sideData = data.map(item => item + 4.5)
-
-    optiontasks = {
-      //设置canvas内部表格的内距
-      grid: {
-        left: 0,
-        right: 0,
-        bottom: '0%',
-        top: -5,
-        containLabel: true
-      },
-      backgroundColor: "#010d3a",
-      tooltip: {
-        trigger: 'axis',
-        formatter: "{b} : {c}",
-        axisPointer: { // 坐标轴指示器，坐标轴触发有效
-          type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-        }
-      },
-      xAxis: {
-        data: ['2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11', '2020-01-11'],
-        //坐标轴
-        axisLine: {
-          lineStyle: {
-            color: '#3eb2e8'
-          }
-        },
-        //坐标值标注
-        axisLabel: {
-          show: true,
-          textStyle: {
-            color: '#fff',
-          }
-        }
-      },
-      yAxis: {
-        //坐标轴
-        axisLine: {
-          show: false
-        },
-        //坐标值标注
-        axisLabel: {
-          show: true,
-          textStyle: {
-            color: '#fff',
-          }
-        },
-        //分格线
-        splitLine: {
-          lineStyle: {
-            color: '#4784e8'
-          }
-        }
-      },
-      series: [{
-        name: 'a',
-        tooltip: {
-          show: false
-        },
-        type: 'bar',
-        barWidth: 24.5,
-        itemStyle: {
-          normal: {
-            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
-              offset: 0,
-              color: "#0B4EC3" // 0% 处的颜色
-            }, {
-              offset: 0.6,
-              color: "#138CEB" // 60% 处的颜色
-            }, {
-              offset: 1,
-              color: "#17AAFE" // 100% 处的颜色
-            }], false)
-          }
-        },
-        data: data,
-        barGap: 0
-      }, {
-        type: 'bar',
-        barWidth: 4,
-        itemStyle: {
-          normal: {
-            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
-              offset: 0,
-              color: "#09337C" // 0% 处的颜色
-            }, {
-              offset: 0.6,
-              color: "#0761C0" // 60% 处的颜色
-            }, {
-              offset: 1,
-              color: "#0575DE" // 100% 处的颜色
-            }], false)
-          }
-        },
-        barGap: 0,
-        data: sideData
-      }, {
-        name: 'b',
-        tooltip: {
-          show: false
-        },
-        type: 'pictorialBar',
-        itemStyle: {
-          borderWidth: 0,
-          borderColor: '#0571D5',
-          color: '#1779E0'
-        },
-        symbol: 'path://M 0,0 l 120,0 l -30,60 l -120,0 z',
-        symbolSize: ['30', '12'],
-        symbolOffset: ['0', '-11'],
-        //symbolRotate: -5,
-        symbolPosition: 'end',
-        data: data,
-        z: 3
-      }]
-    };
-    numberOfElderlyyu.setOption(optiontasks);
-
-
-
   var tianditu_token = '76d3f7cf5446ca392ecde77bf851e00e'; // 填入您的token
   var locations = []; // To store all locations data
   var currentPage = 1;
@@ -1953,14 +681,14 @@
 
   // 添加点击事件处理程序
   addMarkerBtn.addEventListener('click', function() {
-    // 切换表格的显示状态
-    if (tableContent.style.display === 'none') {
-      tableContent.style.display = 'block';
-      addMarkerBtn.textContent = '-'; // 当表格显示时，按钮文本变成减号
-    } else {
-      tableContent.style.display = 'none';
-      addMarkerBtn.textContent = '+'; // 当表格隐藏时，按钮文本变成加号
-    }
+      // 切换表格的显示状态
+      if (tableContent.style.display === 'none') {
+          tableContent.style.display = 'block';
+          addMarkerBtn.textContent = '-'; // 当表格显示时，按钮文本变成减号
+      } else {
+          tableContent.style.display = 'none';
+          addMarkerBtn.textContent = '+'; // 当表格隐藏时，按钮文本变成加号
+      }
   });
 
   //添加热力图显示处理程序。
@@ -1972,58 +700,58 @@
     var ROOT_PATH = 'https://echarts.apache.org/examples';
     var option;
 
-    $.get(ROOT_PATH + '/data/asset/data/hangzhou-tracks.json', function (data) {
-      if(!reLayerVisible) {
-        var points = [].concat.apply(
+    $.get( 'China.json', function (data) {
+        if(!reLayerVisible) {
+            var points = [].concat.apply(
                 [],
-                data.map(function (track) {
-                  return track.map(function (seg) {
-                    return seg.coord.concat([1]);
-                  });
+                data.map(function(track) {
+                    return track.children.map(function(city) {
+                        return [parseFloat(city.log), parseFloat(city.lat), 1];
+                    });
                 })
-        );
-        console.log("points->", points);
-        option = {
-          animation: false,
-          bmap: {
-            center: [120.13066322374, 30.240018034923],
-            zoom: 14,
-            roam: true
-          },
-          visualMap: {
-            show: false,
-            top: 'top',
-            min: 0,
-            max: 5,
-            seriesIndex: 0,
-            calculable: true,
-            inRange: {
-              color: ['blue', 'blue', 'green', 'yellow', 'red']
-            }
-          },
-          series: [
-            {
-              type: 'heatmap',
-              coordinateSystem: 'bmap',
-              data: points,
-              pointSize: 5,
-              blurSize: 6
-            }
-          ]
-        };
-        addReBtn.textContent = '-'; // 当表格隐藏时，按钮文本变成加号
-        reLayer = new ol3Echarts(option);
-        reLayer.appendTo(map);
-        reLayerVisible = true; // 设置图层显示状态为 true
-      }else
-      {
-        reLayer.remove();
-        reLayerVisible = false; // 设置图层显示状态为 false
+            );
+            console.log("points->", points);
+            option = {
+                animation: false,
+                bmap: {
+                    center: [120.13066322374, 30.240018034923],
+                    zoom: 14,
+                    roam: true
+                },
+                visualMap: {
+                    show: false,
+                    top: 'top',
+                    min: 0,
+                    max: 5,
+                    seriesIndex: 0,
+                    calculable: true,
+                    inRange: {
+                        color: ['blue', 'blue', 'green', 'yellow', 'red']
+                    }
+                },
+                series: [
+                    {
+                        type: 'heatmap',
+                        coordinateSystem: 'bmap',
+                        data: points,
+                        pointSize: 5,
+                        blurSize: 6
+                    }
+                ]
+            };
+            addReBtn.textContent = '-'; // 当表格隐藏时，按钮文本变成加号
+            reLayer = new ol3Echarts(option);
+            reLayer.appendTo(map);
+            reLayerVisible = true; // 设置图层显示状态为 true
+        }else
+        {
+            reLayer.remove();
+            reLayerVisible = false; // 设置图层显示状态为 false
 
-        addReBtn.textContent = '+'; // 当表格显示时，按钮文本变成减号
-      }
-    });
-  });
+            addReBtn.textContent = '+'; // 当表格显示时，按钮文本变成减号
+        }
+        });
+});
 
 
 
@@ -2037,266 +765,266 @@
   var echartslayer = new ol3Echarts(getOption());
   echartslayer.appendTo(map)
   function getOption () {
-    var geoCoordMap = {
-      '上海': [121.4648, 31.2891],
-      '东莞': [113.8953, 22.901],
-      '东营': [118.7073, 37.5513],
-      '中山': [113.4229, 22.478],
-      '临汾': [111.4783, 36.1615],
-      '临沂': [118.3118, 35.2936],
-      '丹东': [124.541, 40.4242],
-      '丽水': [119.5642, 28.1854],
-      '乌鲁木齐': [87.9236, 43.5883],
-      '佛山': [112.8955, 23.1097],
-      '保定': [115.0488, 39.0948],
-      '兰州': [103.5901, 36.3043],
-      '包头': [110.3467, 41.4899],
-      '北京': [116.4551, 40.2539],
-      '北海': [109.314, 21.6211],
-      '南京': [118.8062, 31.9208],
-      '南宁': [108.479, 23.1152],
-      '南昌': [116.0046, 28.6633],
-      '南通': [121.1023, 32.1625],
-      '厦门': [118.1689, 24.6478],
-      '台州': [121.1353, 28.6688],
-      '合肥': [117.29, 32.0581],
-      '呼和浩特': [111.4124, 40.4901],
-      '咸阳': [108.4131, 34.8706],
-      '哈尔滨': [127.9688, 45.368],
-      '唐山': [118.4766, 39.6826],
-      '嘉兴': [120.9155, 30.6354],
-      '大同': [113.7854, 39.8035],
-      '大连': [122.2229, 39.4409],
-      '天津': [117.4219, 39.4189],
-      '太原': [112.3352, 37.9413],
-      '威海': [121.9482, 37.1393],
-      '宁波': [121.5967, 29.6466],
-      '宝鸡': [107.1826, 34.3433],
-      '宿迁': [118.5535, 33.7775],
-      '常州': [119.4543, 31.5582],
-      '广州': [113.5107, 23.2196],
-      '廊坊': [116.521, 39.0509],
-      '延安': [109.1052, 36.4252],
-      '张家口': [115.1477, 40.8527],
-      '徐州': [117.5208, 34.3268],
-      '德州': [116.6858, 37.2107],
-      '惠州': [114.6204, 23.1647],
-      '成都': [103.9526, 30.7617],
-      '扬州': [119.4653, 32.8162],
-      '承德': [117.5757, 41.4075],
-      '拉萨': [91.1865, 30.1465],
-      '无锡': [120.3442, 31.5527],
-      '日照': [119.2786, 35.5023],
-      '昆明': [102.9199, 25.4663],
-      '杭州': [119.5313, 29.8773],
-      '枣庄': [117.323, 34.8926],
-      '柳州': [109.3799, 24.9774],
-      '株洲': [113.5327, 27.0319],
-      '武汉': [114.3896, 30.6628],
-      '汕头': [117.1692, 23.3405],
-      '江门': [112.6318, 22.1484],
-      '沈阳': [123.1238, 42.1216],
-      '沧州': [116.8286, 38.2104],
-      '河源': [114.917, 23.9722],
-      '泉州': [118.3228, 25.1147],
-      '泰安': [117.0264, 36.0516],
-      '泰州': [120.0586, 32.5525],
-      '济南': [117.1582, 36.8701],
-      '济宁': [116.8286, 35.3375],
-      '海口': [110.3893, 19.8516],
-      '淄博': [118.0371, 36.6064],
-      '淮安': [118.927, 33.4039],
-      '深圳': [114.5435, 22.5439],
-      '清远': [112.9175, 24.3292],
-      '温州': [120.498, 27.8119],
-      '渭南': [109.7864, 35.0299],
-      '湖州': [119.8608, 30.7782],
-      '湘潭': [112.5439, 27.7075],
-      '滨州': [117.8174, 37.4963],
-      '潍坊': [119.0918, 36.524],
-      '烟台': [120.7397, 37.5128],
-      '玉溪': [101.9312, 23.8898],
-      '珠海': [113.7305, 22.1155],
-      '盐城': [120.2234, 33.5577],
-      '盘锦': [121.9482, 41.0449],
-      '石家庄': [114.4995, 38.1006],
-      '福州': [119.4543, 25.9222],
-      '秦皇岛': [119.2126, 40.0232],
-      '绍兴': [120.564, 29.7565],
-      '聊城': [115.9167, 36.4032],
-      '肇庆': [112.1265, 23.5822],
-      '舟山': [122.2559, 30.2234],
-      '苏州': [120.6519, 31.3989],
-      '莱芜': [117.6526, 36.2714],
-      '菏泽': [115.6201, 35.2057],
-      '营口': [122.4316, 40.4297],
-      '葫芦岛': [120.1575, 40.578],
-      '衡水': [115.8838, 37.7161],
-      '衢州': [118.6853, 28.8666],
-      '西宁': [101.4038, 36.8207],
-      '西安': [109.1162, 34.2004],
-      '贵阳': [106.6992, 26.7682],
-      '连云港': [119.1248, 34.552],
-      '邢台': [114.8071, 37.2821],
-      '邯郸': [114.4775, 36.535],
-      '郑州': [113.4668, 34.6234],
-      '鄂尔多斯': [108.9734, 39.2487],
-      '重庆': [107.7539, 30.1904],
-      '金华': [120.0037, 29.1028],
-      '铜川': [109.0393, 35.1947],
-      '银川': [106.3586, 38.1775],
-      '镇江': [119.4763, 31.9702],
-      '长春': [125.8154, 44.2584],
-      '长沙': [113.0823, 28.2568],
-      '长治': [112.8625, 36.4746],
-      '阳泉': [113.4778, 38.0951],
-      '青岛': [120.4651, 36.3373],
-      '韶关': [113.7964, 24.7028]
-    };
-    var BJData = [
-      [{name: '北京'}, {name: '上海', value: 95}],
-      [{name: '北京'}, {name: '广州', value: 90}],
-      [{name: '北京'}, {name: '大连', value: 80}],
-      [{name: '北京'}, {name: '南宁', value: 70}],
-      [{name: '北京'}, {name: '南昌', value: 60}],
-      [{name: '北京'}, {name: '拉萨', value: 50}],
-      [{name: '北京'}, {name: '长春', value: 40}],
-      [{name: '北京'}, {name: '包头', value: 30}],
-      [{name: '北京'}, {name: '重庆', value: 20}],
-      [{name: '北京'}, {name: '常州', value: 10}]
-    ];
-    var SHData = [
-      [{name: '上海'}, {name: '包头', value: 95}],
-      [{name: '上海'}, {name: '昆明', value: 90}],
-      [{name: '上海'}, {name: '广州', value: 80}],
-      [{name: '上海'}, {name: '郑州', value: 70}],
-      [{name: '上海'}, {name: '长春', value: 60}],
-      [{name: '上海'}, {name: '重庆', value: 50}],
-      [{name: '上海'}, {name: '长沙', value: 40}],
-      [{name: '上海'}, {name: '北京', value: 30}],
-      [{name: '上海'}, {name: '丹东', value: 20}],
-      [{name: '上海'}, {name: '大连', value: 10}]
-    ];
-    var GZData = [
-      [{name: '广州'}, {name: '福州', value: 95}],
-      [{name: '广州'}, {name: '太原', value: 90}],
-      [{name: '广州'}, {name: '长春', value: 80}],
-      [{name: '广州'}, {name: '重庆', value: 70}],
-      [{name: '广州'}, {name: '西安', value: 60}],
-      [{name: '广州'}, {name: '成都', value: 50}],
-      [{name: '广州'}, {name: '常州', value: 40}],
-      [{name: '广州'}, {name: '北京', value: 30}],
-      [{name: '广州'}, {name: '北海', value: 20}],
-      [{name: '广州'}, {name: '海口', value: 10}]
-    ];
-    var planePath = 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z';
-    var convertData = function (data) {
-      var res = [];
-      for (var i = 0; i < data.length; i++) {
-        var dataItem = data[i];
-        var fromCoord = geoCoordMap[dataItem[0].name];
-        var toCoord = geoCoordMap[dataItem[1].name];
-        if (fromCoord && toCoord) {
-          res.push({
-            fromName: dataItem[0].name,
-            toName: dataItem[1].name,
-            coords: [fromCoord, toCoord]
-          });
-        }
-      }
-      return res;
-    };
-    var color = ['#a6c84c', '#ffa022', '#46bee9'];
-    var series = [];
-    [
-      ['北京', BJData], ['上海', SHData], ['广州', GZData]].forEach(
-            function (item, i) {
+      var geoCoordMap = {
+          '上海': [121.4648, 31.2891],
+          '东莞': [113.8953, 22.901],
+          '东营': [118.7073, 37.5513],
+          '中山': [113.4229, 22.478],
+          '临汾': [111.4783, 36.1615],
+          '临沂': [118.3118, 35.2936],
+          '丹东': [124.541, 40.4242],
+          '丽水': [119.5642, 28.1854],
+          '乌鲁木齐': [87.9236, 43.5883],
+          '佛山': [112.8955, 23.1097],
+          '保定': [115.0488, 39.0948],
+          '兰州': [103.5901, 36.3043],
+          '包头': [110.3467, 41.4899],
+          '北京': [116.4551, 40.2539],
+          '北海': [109.314, 21.6211],
+          '南京': [118.8062, 31.9208],
+          '南宁': [108.479, 23.1152],
+          '南昌': [116.0046, 28.6633],
+          '南通': [121.1023, 32.1625],
+          '厦门': [118.1689, 24.6478],
+          '台州': [121.1353, 28.6688],
+          '合肥': [117.29, 32.0581],
+          '呼和浩特': [111.4124, 40.4901],
+          '咸阳': [108.4131, 34.8706],
+          '哈尔滨': [127.9688, 45.368],
+          '唐山': [118.4766, 39.6826],
+          '嘉兴': [120.9155, 30.6354],
+          '大同': [113.7854, 39.8035],
+          '大连': [122.2229, 39.4409],
+          '天津': [117.4219, 39.4189],
+          '太原': [112.3352, 37.9413],
+          '威海': [121.9482, 37.1393],
+          '宁波': [121.5967, 29.6466],
+          '宝鸡': [107.1826, 34.3433],
+          '宿迁': [118.5535, 33.7775],
+          '常州': [119.4543, 31.5582],
+          '广州': [113.5107, 23.2196],
+          '廊坊': [116.521, 39.0509],
+          '延安': [109.1052, 36.4252],
+          '张家口': [115.1477, 40.8527],
+          '徐州': [117.5208, 34.3268],
+          '德州': [116.6858, 37.2107],
+          '惠州': [114.6204, 23.1647],
+          '成都': [103.9526, 30.7617],
+          '扬州': [119.4653, 32.8162],
+          '承德': [117.5757, 41.4075],
+          '拉萨': [91.1865, 30.1465],
+          '无锡': [120.3442, 31.5527],
+          '日照': [119.2786, 35.5023],
+          '昆明': [102.9199, 25.4663],
+          '杭州': [119.5313, 29.8773],
+          '枣庄': [117.323, 34.8926],
+          '柳州': [109.3799, 24.9774],
+          '株洲': [113.5327, 27.0319],
+          '武汉': [114.3896, 30.6628],
+          '汕头': [117.1692, 23.3405],
+          '江门': [112.6318, 22.1484],
+          '沈阳': [123.1238, 42.1216],
+          '沧州': [116.8286, 38.2104],
+          '河源': [114.917, 23.9722],
+          '泉州': [118.3228, 25.1147],
+          '泰安': [117.0264, 36.0516],
+          '泰州': [120.0586, 32.5525],
+          '济南': [117.1582, 36.8701],
+          '济宁': [116.8286, 35.3375],
+          '海口': [110.3893, 19.8516],
+          '淄博': [118.0371, 36.6064],
+          '淮安': [118.927, 33.4039],
+          '深圳': [114.5435, 22.5439],
+          '清远': [112.9175, 24.3292],
+          '温州': [120.498, 27.8119],
+          '渭南': [109.7864, 35.0299],
+          '湖州': [119.8608, 30.7782],
+          '湘潭': [112.5439, 27.7075],
+          '滨州': [117.8174, 37.4963],
+          '潍坊': [119.0918, 36.524],
+          '烟台': [120.7397, 37.5128],
+          '玉溪': [101.9312, 23.8898],
+          '珠海': [113.7305, 22.1155],
+          '盐城': [120.2234, 33.5577],
+          '盘锦': [121.9482, 41.0449],
+          '石家庄': [114.4995, 38.1006],
+          '福州': [119.4543, 25.9222],
+          '秦皇岛': [119.2126, 40.0232],
+          '绍兴': [120.564, 29.7565],
+          '聊城': [115.9167, 36.4032],
+          '肇庆': [112.1265, 23.5822],
+          '舟山': [122.2559, 30.2234],
+          '苏州': [120.6519, 31.3989],
+          '莱芜': [117.6526, 36.2714],
+          '菏泽': [115.6201, 35.2057],
+          '营口': [122.4316, 40.4297],
+          '葫芦岛': [120.1575, 40.578],
+          '衡水': [115.8838, 37.7161],
+          '衢州': [118.6853, 28.8666],
+          '西宁': [101.4038, 36.8207],
+          '西安': [109.1162, 34.2004],
+          '贵阳': [106.6992, 26.7682],
+          '连云港': [119.1248, 34.552],
+          '邢台': [114.8071, 37.2821],
+          '邯郸': [114.4775, 36.535],
+          '郑州': [113.4668, 34.6234],
+          '鄂尔多斯': [108.9734, 39.2487],
+          '重庆': [107.7539, 30.1904],
+          '金华': [120.0037, 29.1028],
+          '铜川': [109.0393, 35.1947],
+          '银川': [106.3586, 38.1775],
+          '镇江': [119.4763, 31.9702],
+          '长春': [125.8154, 44.2584],
+          '长沙': [113.0823, 28.2568],
+          '长治': [112.8625, 36.4746],
+          '阳泉': [113.4778, 38.0951],
+          '青岛': [120.4651, 36.3373],
+          '韶关': [113.7964, 24.7028]
+      };
+      var BJData = [
+          [{name: '北京'}, {name: '上海', value: 95}],
+          [{name: '北京'}, {name: '广州', value: 90}],
+          [{name: '北京'}, {name: '大连', value: 80}],
+          [{name: '北京'}, {name: '南宁', value: 70}],
+          [{name: '北京'}, {name: '南昌', value: 60}],
+          [{name: '北京'}, {name: '拉萨', value: 50}],
+          [{name: '北京'}, {name: '长春', value: 40}],
+          [{name: '北京'}, {name: '包头', value: 30}],
+          [{name: '北京'}, {name: '重庆', value: 20}],
+          [{name: '北京'}, {name: '常州', value: 10}]
+      ];
+      var SHData = [
+          [{name: '上海'}, {name: '包头', value: 95}],
+          [{name: '上海'}, {name: '昆明', value: 90}],
+          [{name: '上海'}, {name: '广州', value: 80}],
+          [{name: '上海'}, {name: '郑州', value: 70}],
+          [{name: '上海'}, {name: '长春', value: 60}],
+          [{name: '上海'}, {name: '重庆', value: 50}],
+          [{name: '上海'}, {name: '长沙', value: 40}],
+          [{name: '上海'}, {name: '北京', value: 30}],
+          [{name: '上海'}, {name: '丹东', value: 20}],
+          [{name: '上海'}, {name: '大连', value: 10}]
+      ];
+      var GZData = [
+          [{name: '广州'}, {name: '福州', value: 95}],
+          [{name: '广州'}, {name: '太原', value: 90}],
+          [{name: '广州'}, {name: '长春', value: 80}],
+          [{name: '广州'}, {name: '重庆', value: 70}],
+          [{name: '广州'}, {name: '西安', value: 60}],
+          [{name: '广州'}, {name: '成都', value: 50}],
+          [{name: '广州'}, {name: '常州', value: 40}],
+          [{name: '广州'}, {name: '北京', value: 30}],
+          [{name: '广州'}, {name: '北海', value: 20}],
+          [{name: '广州'}, {name: '海口', value: 10}]
+      ];
+      var planePath = 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z';
+      var convertData = function (data) {
+          var res = [];
+          for (var i = 0; i < data.length; i++) {
+              var dataItem = data[i];
+              var fromCoord = geoCoordMap[dataItem[0].name];
+              var toCoord = geoCoordMap[dataItem[1].name];
+              if (fromCoord && toCoord) {
+                  res.push({
+                      fromName: dataItem[0].name,
+                      toName: dataItem[1].name,
+                      coords: [fromCoord, toCoord]
+                  });
+              }
+          }
+          return res;
+      };
+      var color = ['#a6c84c', '#ffa022', '#46bee9'];
+      var series = [];
+      [
+          ['北京', BJData], ['上海', SHData], ['广州', GZData]].forEach(
+          function (item, i) {
               series.push({
-                        name: item[0] + ' Top10',
-                        type: 'lines',
-                        zlevel: 1,
-                        effect: {
+                      name: item[0] + ' Top10',
+                      type: 'lines',
+                      zlevel: 1,
+                      effect: {
                           show: true,
                           period: 6,
                           trailLength: 0.7,
                           color: '#fff',
                           symbolSize: 3
-                        },
-                        lineStyle: {
-                          normal: {
-                            color: color[i],
-                            width: 0,
-                            curveness: 0.2
-                          }
-                        },
-                        data: convertData(item[1])
                       },
-                      {
-                        name: item[0] + ' Top10',
-                        type: 'lines',
-                        zlevel: 2,
-                        effect: {
+                      lineStyle: {
+                          normal: {
+                              color: color[i],
+                              width: 0,
+                              curveness: 0.2
+                          }
+                      },
+                      data: convertData(item[1])
+                  },
+                  {
+                      name: item[0] + ' Top10',
+                      type: 'lines',
+                      zlevel: 2,
+                      effect: {
                           show: true,
                           period: 6,
                           trailLength: 0,
                           symbol: planePath,
                           symbolSize: 15
-                        },
-                        lineStyle: {
-                          normal: {
-                            color: color[i],
-                            width: 1,
-                            opacity: 0.4,
-                            curveness: 0.2
-                          }
-                        },
-                        data: convertData(item[1])
                       },
-                      {
-                        name: item[0] + ' Top10',
-                        type: 'effectScatter',
-                        coordinateSystem: 'geo',
-                        zlevel: 2,
-                        rippleEffect: {
+                      lineStyle: {
+                          normal: {
+                              color: color[i],
+                              width: 1,
+                              opacity: 0.4,
+                              curveness: 0.2
+                          }
+                      },
+                      data: convertData(item[1])
+                  },
+                  {
+                      name: item[0] + ' Top10',
+                      type: 'effectScatter',
+                      coordinateSystem: 'geo',
+                      zlevel: 2,
+                      rippleEffect: {
                           brushType: 'stroke'
-                        },
-                        label: {
+                      },
+                      label: {
                           normal: {
-                            show: true,
-                            position: 'right',
-                            formatter: '{b}'
+                              show: true,
+                              position: 'right',
+                              formatter: '{b}'
                           }
-                        },
-                        symbolSize: function (val) {
+                      },
+                      symbolSize: function (val) {
                           return val[2] / 8;
-                        },
-                        itemStyle: {
+                      },
+                      itemStyle: {
                           normal: {
-                            color: color[i]
+                              color: color[i]
                           }
-                        },
-                        data: item[1].map(function (dataItem) {
+                      },
+                      data: item[1].map(function (dataItem) {
                           return {
-                            name: dataItem[1].name,
-                            value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
+                              name: dataItem[1].name,
+                              value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
                           };
-                        })
-                      });
-            });
-    return {
-      tooltip: {
-        trigger: 'item'
-      },
-      /*title: {
-                         text: '模拟迁徙图',
-                         subtext: '',
-                         left: 'center',
-                         textStyle: {
-                             color: '#fff'
-                      }
-               },*/
-      series: series
-    };
+                      })
+                  });
+          });
+      return {
+          tooltip: {
+              trigger: 'item'
+          },
+          /*title: {
+                             text: '模拟迁徙图',
+                             subtext: '',
+                             left: 'center',
+                             textStyle: {
+                                 color: '#fff'
+                          }
+                   },*/
+          series: series
+      };
   }
 
 
@@ -2319,482 +1047,482 @@
   var echartsLayer = null; // 声明一个全局变量来保存 ECharts 图层实例
   var echartsLayerVisible = false; // 声明一个变量来跟踪图层的显示状态
   addEchartsBtn.addEventListener('click', function() {
-    if (!echartsLayerVisible) { // 如果图层未显示，则添加图层
-      var data = [
-        { name: '海门', value: 9 },
-        { name: '鄂尔多斯', value: 12 },
-        { name: '招远', value: 12 },
-        { name: '舟山', value: 12 },
-        { name: '齐齐哈尔', value: 14 },
-        { name: '盐城', value: 15 },
-        { name: '赤峰', value: 16 },
-        { name: '青岛', value: 18 },
-        { name: '乳山', value: 18 },
-        { name: '金昌', value: 19 },
-        { name: '泉州', value: 21 },
-        { name: '莱西', value: 21 },
-        { name: '日照', value: 21 },
-        { name: '胶南', value: 22 },
-        { name: '南通', value: 23 },
-        { name: '拉萨', value: 24 },
-        { name: '云浮', value: 24 },
-        { name: '梅州', value: 25 },
-        { name: '文登', value: 25 },
-        { name: '上海', value: 25 },
-        { name: '攀枝花', value: 25 },
-        { name: '威海', value: 25 },
-        { name: '承德', value: 25 },
-        { name: '厦门', value: 26 },
-        { name: '汕尾', value: 26 },
-        { name: '潮州', value: 26 },
-        { name: '丹东', value: 27 },
-        { name: '太仓', value: 27 },
-        { name: '曲靖', value: 27 },
-        { name: '烟台', value: 28 },
-        { name: '福州', value: 29 },
-        { name: '瓦房店', value: 30 },
-        { name: '即墨', value: 30 },
-        { name: '抚顺', value: 31 },
-        { name: '玉溪', value: 31 },
-        { name: '张家口', value: 31 },
-        { name: '阳泉', value: 31 },
-        { name: '莱州', value: 32 },
-        { name: '湖州', value: 32 },
-        { name: '汕头', value: 32 },
-        { name: '昆山', value: 33 },
-        { name: '宁波', value: 33 },
-        { name: '湛江', value: 33 },
-        { name: '揭阳', value: 34 },
-        { name: '荣成', value: 34 },
-        { name: '连云港', value: 35 },
-        { name: '葫芦岛', value: 35 },
-        { name: '常熟', value: 36 },
-        { name: '东莞', value: 36 },
-        { name: '河源', value: 36 },
-        { name: '淮安', value: 36 },
-        { name: '泰州', value: 36 },
-        { name: '南宁', value: 37 },
-        { name: '营口', value: 37 },
-        { name: '惠州', value: 37 },
-        { name: '江阴', value: 37 },
-        { name: '蓬莱', value: 37 },
-        { name: '韶关', value: 38 },
-        { name: '嘉峪关', value: 38 },
-        { name: '广州', value: 38 },
-        { name: '延安', value: 38 },
-        { name: '太原', value: 39 },
-        { name: '清远', value: 39 },
-        { name: '中山', value: 39 },
-        { name: '昆明', value: 39 },
-        { name: '寿光', value: 40 },
-        { name: '盘锦', value: 40 },
-        { name: '长治', value: 41 },
-        { name: '深圳', value: 41 },
-        { name: '珠海', value: 42 },
-        { name: '宿迁', value: 43 },
-        { name: '咸阳', value: 43 },
-        { name: '铜川', value: 44 },
-        { name: '平度', value: 44 },
-        { name: '佛山', value: 44 },
-        { name: '海口', value: 44 },
-        { name: '江门', value: 45 },
-        { name: '章丘', value: 45 },
-        { name: '肇庆', value: 46 },
-        { name: '大连', value: 47 },
-        { name: '临汾', value: 47 },
-        { name: '吴江', value: 47 },
-        { name: '石嘴山', value: 49 },
-        { name: '沈阳', value: 50 },
-        { name: '苏州', value: 50 },
-        { name: '茂名', value: 50 },
-        { name: '嘉兴', value: 51 },
-        { name: '长春', value: 51 },
-        { name: '胶州', value: 52 },
-        { name: '银川', value: 52 },
-        { name: '张家港', value: 52 },
-        { name: '三门峡', value: 53 },
-        { name: '锦州', value: 54 },
-        { name: '南昌', value: 54 },
-        { name: '柳州', value: 54 },
-        { name: '三亚', value: 54 },
-        { name: '自贡', value: 56 },
-        { name: '吉林', value: 56 },
-        { name: '阳江', value: 57 },
-        { name: '泸州', value: 57 },
-        { name: '西宁', value: 57 },
-        { name: '宜宾', value: 58 },
-        { name: '呼和浩特', value: 58 },
-        { name: '成都', value: 58 },
-        { name: '大同', value: 58 },
-        { name: '镇江', value: 59 },
-        { name: '桂林', value: 59 },
-        { name: '张家界', value: 59 },
-        { name: '宜兴', value: 59 },
-        { name: '北海', value: 60 },
-        { name: '西安', value: 61 },
-        { name: '金坛', value: 62 },
-        { name: '东营', value: 62 },
-        { name: '牡丹江', value: 63 },
-        { name: '遵义', value: 63 },
-        { name: '绍兴', value: 63 },
-        { name: '扬州', value: 64 },
-        { name: '常州', value: 64 },
-        { name: '潍坊', value: 65 },
-        { name: '重庆', value: 66 },
-        { name: '台州', value: 67 },
-        { name: '南京', value: 67 },
-        { name: '滨州', value: 70 },
-        { name: '贵阳', value: 71 },
-        { name: '无锡', value: 71 },
-        { name: '本溪', value: 71 },
-        { name: '克拉玛依', value: 72 },
-        { name: '渭南', value: 72 },
-        { name: '马鞍山', value: 72 },
-        { name: '宝鸡', value: 72 },
-        { name: '焦作', value: 75 },
-        { name: '句容', value: 75 },
-        { name: '北京', value: 79 },
-        { name: '徐州', value: 79 },
-        { name: '衡水', value: 80 },
-        { name: '包头', value: 80 },
-        { name: '绵阳', value: 80 },
-        { name: '乌鲁木齐', value: 84 },
-        { name: '枣庄', value: 84 },
-        { name: '杭州', value: 84 },
-        { name: '淄博', value: 85 },
-        { name: '鞍山', value: 86 },
-        { name: '溧阳', value: 86 },
-        { name: '库尔勒', value: 86 },
-        { name: '安阳', value: 90 },
-        { name: '开封', value: 90 },
-        { name: '济南', value: 92 },
-        { name: '德阳', value: 93 },
-        { name: '温州', value: 95 },
-        { name: '九江', value: 96 },
-        { name: '邯郸', value: 98 },
-        { name: '临安', value: 99 },
-        { name: '兰州', value: 99 },
-        { name: '沧州', value: 100 },
-        { name: '临沂', value: 103 },
-        { name: '南充', value: 104 },
-        { name: '天津', value: 105 },
-        { name: '富阳', value: 106 },
-        { name: '泰安', value: 112 },
-        { name: '诸暨', value: 112 },
-        { name: '郑州', value: 113 },
-        { name: '哈尔滨', value: 114 },
-        { name: '聊城', value: 116 },
-        { name: '芜湖', value: 117 },
-        { name: '唐山', value: 119 },
-        { name: '平顶山', value: 119 },
-        { name: '邢台', value: 119 },
-        { name: '德州', value: 120 },
-        { name: '济宁', value: 120 },
-        { name: '荆州', value: 127 },
-        { name: '宜昌', value: 130 },
-        { name: '义乌', value: 132 },
-        { name: '丽水', value: 133 },
-        { name: '洛阳', value: 134 },
-        { name: '秦皇岛', value: 136 },
-        { name: '株洲', value: 143 },
-        { name: '石家庄', value: 147 },
-        { name: '莱芜', value: 148 },
-        { name: '常德', value: 152 },
-        { name: '保定', value: 153 },
-        { name: '湘潭', value: 154 },
-        { name: '金华', value: 157 },
-        { name: '岳阳', value: 169 },
-        { name: '长沙', value: 175 },
-        { name: '衢州', value: 177 },
-        { name: '廊坊', value: 193 },
-        { name: '菏泽', value: 194 },
-        { name: '合肥', value: 229 },
-        { name: '武汉', value: 273 },
-        { name: '大庆', value: 279 }
-      ];
-      var geoCoordMap = {
-        '海门': [121.15, 31.89],
-        '鄂尔多斯': [109.781327, 39.608266],
-        '招远': [120.38, 37.35],
-        '舟山': [122.207216, 29.985295],
-        '齐齐哈尔': [123.97, 47.33],
-        '盐城': [120.13, 33.38],
-        '赤峰': [118.87, 42.28],
-        '青岛': [120.33, 36.07],
-        '乳山': [121.52, 36.89],
-        '金昌': [102.188043, 38.520089],
-        '泉州': [118.58, 24.93],
-        '莱西': [120.53, 36.86],
-        '日照': [119.46, 35.42],
-        '胶南': [119.97, 35.88],
-        '南通': [121.05, 32.08],
-        '拉萨': [91.11, 29.97],
-        '云浮': [112.02, 22.93],
-        '梅州': [116.1, 24.55],
-        '文登': [122.05, 37.2],
-        '上海': [121.48, 31.22],
-        '攀枝花': [101.718637, 26.582347],
-        '威海': [122.1, 37.5],
-        '承德': [117.93, 40.97],
-        '厦门': [118.1, 24.46],
-        '汕尾': [115.375279, 22.786211],
-        '潮州': [116.63, 23.68],
-        '丹东': [124.37, 40.13],
-        '太仓': [121.1, 31.45],
-        '曲靖': [103.79, 25.51],
-        '烟台': [121.39, 37.52],
-        '福州': [119.3, 26.08],
-        '瓦房店': [121.979603, 39.627114],
-        '即墨': [120.45, 36.38],
-        '抚顺': [123.97, 41.97],
-        '玉溪': [102.52, 24.35],
-        '张家口': [114.87, 40.82],
-        '阳泉': [113.57, 37.85],
-        '莱州': [119.942327, 37.177017],
-        '湖州': [120.1, 30.86],
-        '汕头': [116.69, 23.39],
-        '昆山': [120.95, 31.39],
-        '宁波': [121.56, 29.86],
-        '湛江': [110.359377, 21.270708],
-        '揭阳': [116.35, 23.55],
-        '荣成': [122.41, 37.16],
-        '连云港': [119.16, 34.59],
-        '葫芦岛': [120.836932, 40.711052],
-        '常熟': [120.74, 31.64],
-        '东莞': [113.75, 23.04],
-        '河源': [114.68, 23.73],
-        '淮安': [119.15, 33.5],
-        '泰州': [119.9, 32.49],
-        '南宁': [108.33, 22.84],
-        '营口': [122.18, 40.65],
-        '惠州': [114.4, 23.09],
-        '江阴': [120.26, 31.91],
-        '蓬莱': [120.75, 37.8],
-        '韶关': [113.62, 24.84],
-        '嘉峪关': [98.289152, 39.77313],
-        '广州': [113.23, 23.16],
-        '延安': [109.47, 36.6],
-        '太原': [112.53, 37.87],
-        '清远': [113.01, 23.7],
-        '中山': [113.38, 22.52],
-        '昆明': [102.73, 25.04],
-        '寿光': [118.73, 36.86],
-        '盘锦': [122.070714, 41.119997],
-        '长治': [113.08, 36.18],
-        '深圳': [114.07, 22.62],
-        '珠海': [113.52, 22.3],
-        '宿迁': [118.3, 33.96],
-        '咸阳': [108.72, 34.36],
-        '铜川': [109.11, 35.09],
-        '平度': [119.97, 36.77],
-        '佛山': [113.11, 23.05],
-        '海口': [110.35, 20.02],
-        '江门': [113.06, 22.61],
-        '章丘': [117.53, 36.72],
-        '肇庆': [112.44, 23.05],
-        '大连': [121.62, 38.92],
-        '临汾': [111.5, 36.08],
-        '吴江': [120.63, 31.16],
-        '石嘴山': [106.39, 39.04],
-        '沈阳': [123.38, 41.8],
-        '苏州': [120.62, 31.32],
-        '茂名': [110.88, 21.68],
-        '嘉兴': [120.76, 30.77],
-        '长春': [125.35, 43.88],
-        '胶州': [120.03336, 36.264622],
-        '银川': [106.27, 38.47],
-        '张家港': [120.555821, 31.875428],
-        '三门峡': [111.19, 34.76],
-        '锦州': [121.15, 41.13],
-        '南昌': [115.89, 28.68],
-        '柳州': [109.4, 24.33],
-        '三亚': [109.511909, 18.252847],
-        '自贡': [104.778442, 29.33903],
-        '吉林': [126.57, 43.87],
-        '阳江': [111.95, 21.85],
-        '泸州': [105.39, 28.91],
-        '西宁': [101.74, 36.56],
-        '宜宾': [104.56, 29.77],
-        '呼和浩特': [111.65, 40.82],
-        '成都': [104.06, 30.67],
-        '大同': [113.3, 40.12],
-        '镇江': [119.44, 32.2],
-        '桂林': [110.28, 25.29],
-        '张家界': [110.479191, 29.117096],
-        '宜兴': [119.82, 31.36],
-        '北海': [109.12, 21.49],
-        '西安': [108.95, 34.27],
-        '金坛': [119.56, 31.74],
-        '东营': [118.49, 37.46],
-        '牡丹江': [129.58, 44.6],
-        '遵义': [106.9, 27.7],
-        '绍兴': [120.58, 30.01],
-        '扬州': [119.42, 32.39],
-        '常州': [119.95, 31.79],
-        '潍坊': [119.1, 36.62],
-        '重庆': [106.54, 29.59],
-        '台州': [121.420757, 28.656386],
-        '南京': [118.78, 32.04],
-        '滨州': [118.03, 37.36],
-        '贵阳': [106.71, 26.57],
-        '无锡': [120.29, 31.59],
-        '本溪': [123.73, 41.3],
-        '克拉玛依': [84.77, 45.59],
-        '渭南': [109.5, 34.52],
-        '马鞍山': [118.48, 31.56],
-        '宝鸡': [107.15, 34.38],
-        '焦作': [113.21, 35.24],
-        '句容': [119.16, 31.95],
-        '北京': [116.46, 39.92],
-        '徐州': [117.2, 34.26],
-        '衡水': [115.72, 37.72],
-        '包头': [110, 40.58],
-        '绵阳': [104.73, 31.48],
-        '乌鲁木齐': [87.68, 43.77],
-        '枣庄': [117.57, 34.86],
-        '杭州': [120.19, 30.26],
-        '淄博': [118.05, 36.78],
-        '鞍山': [122.85, 41.12],
-        '溧阳': [119.48, 31.43],
-        '库尔勒': [86.06, 41.68],
-        '安阳': [114.35, 36.1],
-        '开封': [114.35, 34.79],
-        '济南': [117, 36.65],
-        '德阳': [104.37, 31.13],
-        '温州': [120.65, 28.01],
-        '九江': [115.97, 29.71],
-        '邯郸': [114.47, 36.6],
-        '临安': [119.72, 30.23],
-        '兰州': [103.73, 36.03],
-        '沧州': [116.83, 38.33],
-        '临沂': [118.35, 35.05],
-        '南充': [106.110698, 30.837793],
-        '天津': [117.2, 39.13],
-        '富阳': [119.95, 30.07],
-        '泰安': [117.13, 36.18],
-        '诸暨': [120.23, 29.71],
-        '郑州': [113.65, 34.76],
-        '哈尔滨': [126.63, 45.75],
-        '聊城': [115.97, 36.45],
-        '芜湖': [118.38, 31.33],
-        '唐山': [118.02, 39.63],
-        '平顶山': [113.29, 33.75],
-        '邢台': [114.48, 37.05],
-        '德州': [116.29, 37.45],
-        '济宁': [116.59, 35.38],
-        '荆州': [112.239741, 30.335165],
-        '宜昌': [111.3, 30.7],
-        '义乌': [120.06, 29.32],
-        '丽水': [119.92, 28.45],
-        '洛阳': [112.44, 34.7],
-        '秦皇岛': [119.57, 39.95],
-        '株洲': [113.16, 27.83],
-        '石家庄': [114.48, 38.03],
-        '莱芜': [117.67, 36.19],
-        '常德': [111.69, 29.05],
-        '保定': [115.48, 38.85],
-        '湘潭': [112.91, 27.87],
-        '金华': [119.64, 29.12],
-        '岳阳': [113.09, 29.37],
-        '长沙': [113, 28.21],
-        '衢州': [118.88, 28.97],
-        '廊坊': [116.7, 39.53],
-        '菏泽': [115.480656, 35.23375],
-        '合肥': [117.27, 31.86],
-        '武汉': [114.31, 30.52],
-        '大庆': [125.03, 46.58]
-      };
+      if (!echartsLayerVisible) { // 如果图层未显示，则添加图层
+          var data = [
+              { name: '海门', value: 9 },
+              { name: '鄂尔多斯', value: 12 },
+              { name: '招远', value: 12 },
+              { name: '舟山', value: 12 },
+              { name: '齐齐哈尔', value: 14 },
+              { name: '盐城', value: 15 },
+              { name: '赤峰', value: 16 },
+              { name: '青岛', value: 18 },
+              { name: '乳山', value: 18 },
+              { name: '金昌', value: 19 },
+              { name: '泉州', value: 21 },
+              { name: '莱西', value: 21 },
+              { name: '日照', value: 21 },
+              { name: '胶南', value: 22 },
+              { name: '南通', value: 23 },
+              { name: '拉萨', value: 24 },
+              { name: '云浮', value: 24 },
+              { name: '梅州', value: 25 },
+              { name: '文登', value: 25 },
+              { name: '上海', value: 25 },
+              { name: '攀枝花', value: 25 },
+              { name: '威海', value: 25 },
+              { name: '承德', value: 25 },
+              { name: '厦门', value: 26 },
+              { name: '汕尾', value: 26 },
+              { name: '潮州', value: 26 },
+              { name: '丹东', value: 27 },
+              { name: '太仓', value: 27 },
+              { name: '曲靖', value: 27 },
+              { name: '烟台', value: 28 },
+              { name: '福州', value: 29 },
+              { name: '瓦房店', value: 30 },
+              { name: '即墨', value: 30 },
+              { name: '抚顺', value: 31 },
+              { name: '玉溪', value: 31 },
+              { name: '张家口', value: 31 },
+              { name: '阳泉', value: 31 },
+              { name: '莱州', value: 32 },
+              { name: '湖州', value: 32 },
+              { name: '汕头', value: 32 },
+              { name: '昆山', value: 33 },
+              { name: '宁波', value: 33 },
+              { name: '湛江', value: 33 },
+              { name: '揭阳', value: 34 },
+              { name: '荣成', value: 34 },
+              { name: '连云港', value: 35 },
+              { name: '葫芦岛', value: 35 },
+              { name: '常熟', value: 36 },
+              { name: '东莞', value: 36 },
+              { name: '河源', value: 36 },
+              { name: '淮安', value: 36 },
+              { name: '泰州', value: 36 },
+              { name: '南宁', value: 37 },
+              { name: '营口', value: 37 },
+              { name: '惠州', value: 37 },
+              { name: '江阴', value: 37 },
+              { name: '蓬莱', value: 37 },
+              { name: '韶关', value: 38 },
+              { name: '嘉峪关', value: 38 },
+              { name: '广州', value: 38 },
+              { name: '延安', value: 38 },
+              { name: '太原', value: 39 },
+              { name: '清远', value: 39 },
+              { name: '中山', value: 39 },
+              { name: '昆明', value: 39 },
+              { name: '寿光', value: 40 },
+              { name: '盘锦', value: 40 },
+              { name: '长治', value: 41 },
+              { name: '深圳', value: 41 },
+              { name: '珠海', value: 42 },
+              { name: '宿迁', value: 43 },
+              { name: '咸阳', value: 43 },
+              { name: '铜川', value: 44 },
+              { name: '平度', value: 44 },
+              { name: '佛山', value: 44 },
+              { name: '海口', value: 44 },
+              { name: '江门', value: 45 },
+              { name: '章丘', value: 45 },
+              { name: '肇庆', value: 46 },
+              { name: '大连', value: 47 },
+              { name: '临汾', value: 47 },
+              { name: '吴江', value: 47 },
+              { name: '石嘴山', value: 49 },
+              { name: '沈阳', value: 50 },
+              { name: '苏州', value: 50 },
+              { name: '茂名', value: 50 },
+              { name: '嘉兴', value: 51 },
+              { name: '长春', value: 51 },
+              { name: '胶州', value: 52 },
+              { name: '银川', value: 52 },
+              { name: '张家港', value: 52 },
+              { name: '三门峡', value: 53 },
+              { name: '锦州', value: 54 },
+              { name: '南昌', value: 54 },
+              { name: '柳州', value: 54 },
+              { name: '三亚', value: 54 },
+              { name: '自贡', value: 56 },
+              { name: '吉林', value: 56 },
+              { name: '阳江', value: 57 },
+              { name: '泸州', value: 57 },
+              { name: '西宁', value: 57 },
+              { name: '宜宾', value: 58 },
+              { name: '呼和浩特', value: 58 },
+              { name: '成都', value: 58 },
+              { name: '大同', value: 58 },
+              { name: '镇江', value: 59 },
+              { name: '桂林', value: 59 },
+              { name: '张家界', value: 59 },
+              { name: '宜兴', value: 59 },
+              { name: '北海', value: 60 },
+              { name: '西安', value: 61 },
+              { name: '金坛', value: 62 },
+              { name: '东营', value: 62 },
+              { name: '牡丹江', value: 63 },
+              { name: '遵义', value: 63 },
+              { name: '绍兴', value: 63 },
+              { name: '扬州', value: 64 },
+              { name: '常州', value: 64 },
+              { name: '潍坊', value: 65 },
+              { name: '重庆', value: 66 },
+              { name: '台州', value: 67 },
+              { name: '南京', value: 67 },
+              { name: '滨州', value: 70 },
+              { name: '贵阳', value: 71 },
+              { name: '无锡', value: 71 },
+              { name: '本溪', value: 71 },
+              { name: '克拉玛依', value: 72 },
+              { name: '渭南', value: 72 },
+              { name: '马鞍山', value: 72 },
+              { name: '宝鸡', value: 72 },
+              { name: '焦作', value: 75 },
+              { name: '句容', value: 75 },
+              { name: '北京', value: 79 },
+              { name: '徐州', value: 79 },
+              { name: '衡水', value: 80 },
+              { name: '包头', value: 80 },
+              { name: '绵阳', value: 80 },
+              { name: '乌鲁木齐', value: 84 },
+              { name: '枣庄', value: 84 },
+              { name: '杭州', value: 84 },
+              { name: '淄博', value: 85 },
+              { name: '鞍山', value: 86 },
+              { name: '溧阳', value: 86 },
+              { name: '库尔勒', value: 86 },
+              { name: '安阳', value: 90 },
+              { name: '开封', value: 90 },
+              { name: '济南', value: 92 },
+              { name: '德阳', value: 93 },
+              { name: '温州', value: 95 },
+              { name: '九江', value: 96 },
+              { name: '邯郸', value: 98 },
+              { name: '临安', value: 99 },
+              { name: '兰州', value: 99 },
+              { name: '沧州', value: 100 },
+              { name: '临沂', value: 103 },
+              { name: '南充', value: 104 },
+              { name: '天津', value: 105 },
+              { name: '富阳', value: 106 },
+              { name: '泰安', value: 112 },
+              { name: '诸暨', value: 112 },
+              { name: '郑州', value: 113 },
+              { name: '哈尔滨', value: 114 },
+              { name: '聊城', value: 116 },
+              { name: '芜湖', value: 117 },
+              { name: '唐山', value: 119 },
+              { name: '平顶山', value: 119 },
+              { name: '邢台', value: 119 },
+              { name: '德州', value: 120 },
+              { name: '济宁', value: 120 },
+              { name: '荆州', value: 127 },
+              { name: '宜昌', value: 130 },
+              { name: '义乌', value: 132 },
+              { name: '丽水', value: 133 },
+              { name: '洛阳', value: 134 },
+              { name: '秦皇岛', value: 136 },
+              { name: '株洲', value: 143 },
+              { name: '石家庄', value: 147 },
+              { name: '莱芜', value: 148 },
+              { name: '常德', value: 152 },
+              { name: '保定', value: 153 },
+              { name: '湘潭', value: 154 },
+              { name: '金华', value: 157 },
+              { name: '岳阳', value: 169 },
+              { name: '长沙', value: 175 },
+              { name: '衢州', value: 177 },
+              { name: '廊坊', value: 193 },
+              { name: '菏泽', value: 194 },
+              { name: '合肥', value: 229 },
+              { name: '武汉', value: 273 },
+              { name: '大庆', value: 279 }
+          ];
+          var geoCoordMap = {
+              '海门': [121.15, 31.89],
+              '鄂尔多斯': [109.781327, 39.608266],
+              '招远': [120.38, 37.35],
+              '舟山': [122.207216, 29.985295],
+              '齐齐哈尔': [123.97, 47.33],
+              '盐城': [120.13, 33.38],
+              '赤峰': [118.87, 42.28],
+              '青岛': [120.33, 36.07],
+              '乳山': [121.52, 36.89],
+              '金昌': [102.188043, 38.520089],
+              '泉州': [118.58, 24.93],
+              '莱西': [120.53, 36.86],
+              '日照': [119.46, 35.42],
+              '胶南': [119.97, 35.88],
+              '南通': [121.05, 32.08],
+              '拉萨': [91.11, 29.97],
+              '云浮': [112.02, 22.93],
+              '梅州': [116.1, 24.55],
+              '文登': [122.05, 37.2],
+              '上海': [121.48, 31.22],
+              '攀枝花': [101.718637, 26.582347],
+              '威海': [122.1, 37.5],
+              '承德': [117.93, 40.97],
+              '厦门': [118.1, 24.46],
+              '汕尾': [115.375279, 22.786211],
+              '潮州': [116.63, 23.68],
+              '丹东': [124.37, 40.13],
+              '太仓': [121.1, 31.45],
+              '曲靖': [103.79, 25.51],
+              '烟台': [121.39, 37.52],
+              '福州': [119.3, 26.08],
+              '瓦房店': [121.979603, 39.627114],
+              '即墨': [120.45, 36.38],
+              '抚顺': [123.97, 41.97],
+              '玉溪': [102.52, 24.35],
+              '张家口': [114.87, 40.82],
+              '阳泉': [113.57, 37.85],
+              '莱州': [119.942327, 37.177017],
+              '湖州': [120.1, 30.86],
+              '汕头': [116.69, 23.39],
+              '昆山': [120.95, 31.39],
+              '宁波': [121.56, 29.86],
+              '湛江': [110.359377, 21.270708],
+              '揭阳': [116.35, 23.55],
+              '荣成': [122.41, 37.16],
+              '连云港': [119.16, 34.59],
+              '葫芦岛': [120.836932, 40.711052],
+              '常熟': [120.74, 31.64],
+              '东莞': [113.75, 23.04],
+              '河源': [114.68, 23.73],
+              '淮安': [119.15, 33.5],
+              '泰州': [119.9, 32.49],
+              '南宁': [108.33, 22.84],
+              '营口': [122.18, 40.65],
+              '惠州': [114.4, 23.09],
+              '江阴': [120.26, 31.91],
+              '蓬莱': [120.75, 37.8],
+              '韶关': [113.62, 24.84],
+              '嘉峪关': [98.289152, 39.77313],
+              '广州': [113.23, 23.16],
+              '延安': [109.47, 36.6],
+              '太原': [112.53, 37.87],
+              '清远': [113.01, 23.7],
+              '中山': [113.38, 22.52],
+              '昆明': [102.73, 25.04],
+              '寿光': [118.73, 36.86],
+              '盘锦': [122.070714, 41.119997],
+              '长治': [113.08, 36.18],
+              '深圳': [114.07, 22.62],
+              '珠海': [113.52, 22.3],
+              '宿迁': [118.3, 33.96],
+              '咸阳': [108.72, 34.36],
+              '铜川': [109.11, 35.09],
+              '平度': [119.97, 36.77],
+              '佛山': [113.11, 23.05],
+              '海口': [110.35, 20.02],
+              '江门': [113.06, 22.61],
+              '章丘': [117.53, 36.72],
+              '肇庆': [112.44, 23.05],
+              '大连': [121.62, 38.92],
+              '临汾': [111.5, 36.08],
+              '吴江': [120.63, 31.16],
+              '石嘴山': [106.39, 39.04],
+              '沈阳': [123.38, 41.8],
+              '苏州': [120.62, 31.32],
+              '茂名': [110.88, 21.68],
+              '嘉兴': [120.76, 30.77],
+              '长春': [125.35, 43.88],
+              '胶州': [120.03336, 36.264622],
+              '银川': [106.27, 38.47],
+              '张家港': [120.555821, 31.875428],
+              '三门峡': [111.19, 34.76],
+              '锦州': [121.15, 41.13],
+              '南昌': [115.89, 28.68],
+              '柳州': [109.4, 24.33],
+              '三亚': [109.511909, 18.252847],
+              '自贡': [104.778442, 29.33903],
+              '吉林': [126.57, 43.87],
+              '阳江': [111.95, 21.85],
+              '泸州': [105.39, 28.91],
+              '西宁': [101.74, 36.56],
+              '宜宾': [104.56, 29.77],
+              '呼和浩特': [111.65, 40.82],
+              '成都': [104.06, 30.67],
+              '大同': [113.3, 40.12],
+              '镇江': [119.44, 32.2],
+              '桂林': [110.28, 25.29],
+              '张家界': [110.479191, 29.117096],
+              '宜兴': [119.82, 31.36],
+              '北海': [109.12, 21.49],
+              '西安': [108.95, 34.27],
+              '金坛': [119.56, 31.74],
+              '东营': [118.49, 37.46],
+              '牡丹江': [129.58, 44.6],
+              '遵义': [106.9, 27.7],
+              '绍兴': [120.58, 30.01],
+              '扬州': [119.42, 32.39],
+              '常州': [119.95, 31.79],
+              '潍坊': [119.1, 36.62],
+              '重庆': [106.54, 29.59],
+              '台州': [121.420757, 28.656386],
+              '南京': [118.78, 32.04],
+              '滨州': [118.03, 37.36],
+              '贵阳': [106.71, 26.57],
+              '无锡': [120.29, 31.59],
+              '本溪': [123.73, 41.3],
+              '克拉玛依': [84.77, 45.59],
+              '渭南': [109.5, 34.52],
+              '马鞍山': [118.48, 31.56],
+              '宝鸡': [107.15, 34.38],
+              '焦作': [113.21, 35.24],
+              '句容': [119.16, 31.95],
+              '北京': [116.46, 39.92],
+              '徐州': [117.2, 34.26],
+              '衡水': [115.72, 37.72],
+              '包头': [110, 40.58],
+              '绵阳': [104.73, 31.48],
+              '乌鲁木齐': [87.68, 43.77],
+              '枣庄': [117.57, 34.86],
+              '杭州': [120.19, 30.26],
+              '淄博': [118.05, 36.78],
+              '鞍山': [122.85, 41.12],
+              '溧阳': [119.48, 31.43],
+              '库尔勒': [86.06, 41.68],
+              '安阳': [114.35, 36.1],
+              '开封': [114.35, 34.79],
+              '济南': [117, 36.65],
+              '德阳': [104.37, 31.13],
+              '温州': [120.65, 28.01],
+              '九江': [115.97, 29.71],
+              '邯郸': [114.47, 36.6],
+              '临安': [119.72, 30.23],
+              '兰州': [103.73, 36.03],
+              '沧州': [116.83, 38.33],
+              '临沂': [118.35, 35.05],
+              '南充': [106.110698, 30.837793],
+              '天津': [117.2, 39.13],
+              '富阳': [119.95, 30.07],
+              '泰安': [117.13, 36.18],
+              '诸暨': [120.23, 29.71],
+              '郑州': [113.65, 34.76],
+              '哈尔滨': [126.63, 45.75],
+              '聊城': [115.97, 36.45],
+              '芜湖': [118.38, 31.33],
+              '唐山': [118.02, 39.63],
+              '平顶山': [113.29, 33.75],
+              '邢台': [114.48, 37.05],
+              '德州': [116.29, 37.45],
+              '济宁': [116.59, 35.38],
+              '荆州': [112.239741, 30.335165],
+              '宜昌': [111.3, 30.7],
+              '义乌': [120.06, 29.32],
+              '丽水': [119.92, 28.45],
+              '洛阳': [112.44, 34.7],
+              '秦皇岛': [119.57, 39.95],
+              '株洲': [113.16, 27.83],
+              '石家庄': [114.48, 38.03],
+              '莱芜': [117.67, 36.19],
+              '常德': [111.69, 29.05],
+              '保定': [115.48, 38.85],
+              '湘潭': [112.91, 27.87],
+              '金华': [119.64, 29.12],
+              '岳阳': [113.09, 29.37],
+              '长沙': [113, 28.21],
+              '衢州': [118.88, 28.97],
+              '廊坊': [116.7, 39.53],
+              '菏泽': [115.480656, 35.23375],
+              '合肥': [117.27, 31.86],
+              '武汉': [114.31, 30.52],
+              '大庆': [125.03, 46.58]
+          };
 
-      var convertData = function(data) {
-        var res = [];
-        for (var i = 0; i < data.length; i++) {
-          var geoCoord = geoCoordMap[data[i].name];
-          if (geoCoord) {
-            res.push({
-              name: data[i].name,
-              value: geoCoord.concat(data[i].value)
-            });
-          }
-        }
-        return res;
-      };
+          var convertData = function(data) {
+              var res = [];
+              for (var i = 0; i < data.length; i++) {
+                  var geoCoord = geoCoordMap[data[i].name];
+                  if (geoCoord) {
+                      res.push({
+                          name: data[i].name,
+                          value: geoCoord.concat(data[i].value)
+                      });
+                  }
+              }
+              return res;
+          };
 
-      var option = {
-        title: {
-          text: '全国主要城市空气质量',
-          subtext: 'data from PM25.in',
-          sublink: 'http://www.pm25.in',
-          left: 'center'
-        },
-        series: [{
-          name: 'pm2.5',
-          type: 'scatter',
-          coordinateSystem: 'bmap',
-          data: convertData(data),
-          symbolSize: function(val) {
-            return val[2] / 10;
-          },
-          encode: {
-            value: 2
-          },
-          label: {
-            formatter: '{b}',
-            position: 'right',
-            show: false
-          },
-          itemStyle: {
-            color: 'yellow',
-          },
-          emphasis: {
-            label: {
-              show: true
-            }
-          }
-        },
-          {
-            name: 'Top 5',
-            type: 'effectScatter',
-            data: convertData(data.sort(function(a, b) {
-              return b.value - a.value;
-            }).slice(0, 6)),
-            symbolSize: function(val) {
-              return val[2] / 10;
-            },
-            encode: {
-              value: 2
-            },
-            showEffectOn: 'render',
-            rippleEffect: {
-              brushType: 'stroke'
-            },
-            hoverAnimation: true,
-            label: {
-              formatter: '{b}',
-              position: 'right',
-              show: true
-            },
-            itemStyle: {
-              color: 'purple',
-              shadowBlur: 10,
-              shadowColor: '#333'
-            },
-            zlevel: 1
-          }
-        ]
-      };
-      addEchartsBtn.textContent = '-'; // 当表格隐藏时，按钮文本变成加号
-      echartsLayer = new ol3Echarts(option);
-      echartsLayer.appendTo(map);
-      echartsLayerVisible = true; // 设置图层显示状态为 true
-    } else { // 如果图层已显示，则移除图层
-      echartsLayer.remove();
-      echartsLayerVisible = false; // 设置图层显示状态为 false
+          var option = {
+              title: {
+                  text: '全国主要城市空气质量',
+                  subtext: 'data from PM25.in',
+                  sublink: 'http://www.pm25.in',
+                  left: 'center'
+              },
+              series: [{
+                  name: 'pm2.5',
+                  type: 'scatter',
+                  coordinateSystem: 'bmap',
+                  data: convertData(data),
+                  symbolSize: function(val) {
+                      return val[2] / 10;
+                  },
+                  encode: {
+                      value: 2
+                  },
+                  label: {
+                      formatter: '{b}',
+                      position: 'right',
+                      show: false
+                  },
+                  itemStyle: {
+                      color: 'yellow',
+                  },
+                  emphasis: {
+                      label: {
+                          show: true
+                      }
+                  }
+              },
+                  {
+                      name: 'Top 5',
+                      type: 'effectScatter',
+                      data: convertData(data.sort(function(a, b) {
+                          return b.value - a.value;
+                      }).slice(0, 6)),
+                      symbolSize: function(val) {
+                          return val[2] / 10;
+                      },
+                      encode: {
+                          value: 2
+                      },
+                      showEffectOn: 'render',
+                      rippleEffect: {
+                          brushType: 'stroke'
+                      },
+                      hoverAnimation: true,
+                      label: {
+                          formatter: '{b}',
+                          position: 'right',
+                          show: true
+                      },
+                      itemStyle: {
+                          color: 'purple',
+                          shadowBlur: 10,
+                          shadowColor: '#333'
+                      },
+                      zlevel: 1
+                  }
+              ]
+          };
+          addEchartsBtn.textContent = '-'; // 当表格隐藏时，按钮文本变成加号
+          echartsLayer = new ol3Echarts(option);
+          echartsLayer.appendTo(map);
+          echartsLayerVisible = true; // 设置图层显示状态为 true
+      } else { // 如果图层已显示，则移除图层
+          echartsLayer.remove();
+          echartsLayerVisible = false; // 设置图层显示状态为 false
 
-      addEchartsBtn.textContent = '+'; // 当表格显示时，按钮文本变成减号
+          addEchartsBtn.textContent = '+'; // 当表格显示时，按钮文本变成减号
 
 
 
-    }
+      }
   });
 
 
