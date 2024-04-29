@@ -113,16 +113,28 @@
             cursor: pointer;
         }
         /* 按钮样式 */
-        /*.add-button {*/
-        /*    padding: 10px 20px;*/
-        /*    font-size: 16px;*/
-        /*    border: none;*/
-        /*    border-radius: 5px;*/
-        /*    background-color: mediumpurple;*/
-        /*    color: white;*/
-        /*    cursor: pointer;*/
-        /*    margin-right: 10px;*/
-        /*}*/
+        .add-button {
+           /* padding: 10px 20px;
+           font-size: 16px;
+           border: none;
+           border-radius: 5px;
+           background-color: mediumpurple;
+           color: white;
+           cursor: pointer;
+           margin-right: 10px; */
+            position: absolute;
+            top: 210px; /* 调整按钮距离顶部的距离 */
+            right: 10px; /* 调整按钮距离右侧的距离 */
+            width: 100px; /* 按钮宽度 */
+            height: 30px; /* 按钮高度 */
+            border-radius: 50%; 
+            background-color: mediumpurple; /* 紫色背景 */
+            z-index: 999; /* 确保按钮位于地图之上 */
+            color: white; /* 文本颜色 */
+            font-size: 20px; /* 文本大小 */
+            border: none; /* 移除按钮边框 */
+            cursor: pointer; /* 鼠标指针形状 */
+        }
         .chuansong {
             padding: 10px 20px;
             font-size: 16px;
@@ -152,7 +164,7 @@
         /* 下拉菜单样式 */
         select {
             position: absolute;
-            top: 130px; /* 调整按钮距离顶部的距离 */
+            top: 240px; /* 调整按钮距离顶部的距离 */
             right: 10px; /* 调整按钮距离右侧的距离 */
             width: 100px; /* 按钮宽度 */
             height: 30px; /* 按钮高度 */
@@ -449,6 +461,7 @@
 
 <button id="add-re-btn" class="add-re-btn">+</button>
 <button id="data-btn" class="data-btn">+</button>
+<button class="add-button" id="add-button">增</button>
 
 <div id="selectTu">
     <select id="layerSelect" onchange="changeLayer()">
@@ -531,7 +544,7 @@
         <tbody id="data-table-body">
         </tbody>
     </table>
-    <!--        <button class="add-button" id="add-button">增加小区</button> &lt;!&ndash; 新增加的按钮 &ndash;&gt;-->
+           <!-- <button class="add-button" id="add-button">增加小区</button> &lt;!&ndash; 新增加的按钮 &ndash;&gt; -->
     <!--        <div style="margin-bottom: 10px;margin-top: 10px">图层切换：-->
     <!--            <select id="layerSelect" onchange="changeLayer()">-->
     <!--                <option value="">选择图层</option>-->
@@ -3610,12 +3623,12 @@
     }
 
     //点击新增按钮，弹出弹窗
-    // var addBtn = document.getElementById('add-button');
-    // addBtn.addEventListener('click', function() {
-    //   var modal = document.getElementById('addModal');
-    //   modal.style.display = 'block';
-    //
-    // });
+    var addBtn = document.getElementById('add-button');
+    addBtn.addEventListener('click', function() {
+      var modal = document.getElementById('addModal');
+      modal.style.display = 'block';
+    
+    });
 
     //点击新增弹窗右上角“×”，关闭弹窗
     var addModal = document.getElementById('addModal'); // 获取新增模态框
@@ -3637,10 +3650,10 @@
             modal.style.display = 'none';//关闭编辑弹窗
 
         }
-        // if(event.target==addModal)
-        // {
-        //   addModal.style.display = 'none';//关闭新增弹窗
-        // }
+        if(event.target==addModal)
+        {
+          addModal.style.display = 'none';//关闭新增弹窗
+        }
     };
 
     //处理更新信息的弹窗
@@ -3705,21 +3718,21 @@
         xhr.send(JSON.stringify(data));
     }
 
-    //处理新增小区弹窗的提交
-    // document.getElementById('addForm').addEventListener('submit', function(event) {
-    //   event.preventDefault();
-    //   var addCommunity = document.getElementById('addCommunity').value;
-    //   var addLongitude = document.getElementById('addLongitude').value;
-    //   var addLatitude = document.getElementById('addLatitude').value;
-    //   var newLocation = {
-    //     community: addCommunity,
-    //     longitude: addLongitude,
-    //     latitude: addLatitude
-    //   };
-    //   addNewLocation(newLocation);
-    //   var modal = document.getElementById('addModal');
-    //   modal.style.display = 'none';
-    // });
+    // 处理新增小区弹窗的提交
+    document.getElementById('addForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var addCommunity = document.getElementById('addCommunity').value;
+      var addLongitude = document.getElementById('addLongitude').value;
+      var addLatitude = document.getElementById('addLatitude').value;
+      var newLocation = {
+        community: addCommunity,
+        longitude: addLongitude,
+        latitude: addLatitude
+      };
+      addNewLocation(newLocation);
+      var modal = document.getElementById('addModal');
+      modal.style.display = 'none';
+    });
 
     //新增小区信息，与后端交互
     function addNewLocation(location) {
