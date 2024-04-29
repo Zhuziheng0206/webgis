@@ -149,10 +149,18 @@
 
         /* 下拉菜单样式 */
         select {
-            padding: 8px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            position: absolute;
+            top: 130px; /* 调整按钮距离顶部的距离 */
+            right: 10px; /* 调整按钮距离右侧的距离 */
+            width: 100px; /* 按钮宽度 */
+            height: 30px; /* 按钮高度 */
+            /* border-radius: 50%; 变成圆形 */
+            background-color: mediumpurple; /* 紫色背景 */
+            z-index: 999; /* 确保按钮位于地图之上 */
+            color: white; /* 文本颜色 */
+            font-size: 20px; /* 文本大小 */
+            border: none; /* 移除按钮边框 */
+            cursor: pointer; /* 鼠标指针形状 */
         }
 
         /* 距离信息样式 */
@@ -352,6 +360,12 @@
 
 <button id="add-re-btn" class="add-re-btn">+</button>
 
+<div id="selectTu">
+    <select id="layerSelect" onchange="changeLayer()">
+        <option value="">选择图层</option>
+    </select>
+</div>
+
 <div id="pie-chart-container"  style="display: none;"></div>
 
 
@@ -497,39 +511,39 @@
   var map = new ol.Map({
     target:'map',
     layers:[
-      // new ol.layer.Tile({
-      //   title: "天地图矢量图层",
-      //   source: new ol.source.XYZ({
-      //     url: "http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
-      //     wrapX: false
-      //   })
-      // }),
-      // new ol.layer.Tile({
-      //   title: "天地图矢量注记图层",
-      //   source: new ol.source.XYZ({
-      //     url: "http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
-      //     wrapX: false
-      //   })
-      // }),
-      // // tiandituLayer,
-      // new ol.layer.Tile({
-      //   title: "天地图卫星图层",
-      //   source: new ol.source.XYZ({
-      //     url: "http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
-      //     wrapX: false
-      //   })
-      // }),
+      new ol.layer.Tile({
+        title: "天地图矢量图层",
+        source: new ol.source.XYZ({
+          url: "http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+          wrapX: false
+        })
+      }),
+      new ol.layer.Tile({
+        title: "天地图矢量注记图层",
+        source: new ol.source.XYZ({
+          url: "http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+          wrapX: false
+        })
+      }),
+      // tiandituLayer,
+      new ol.layer.Tile({
+        title: "天地图卫星图层",
+        source: new ol.source.XYZ({
+          url: "http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=" + tianditu_token,
+          wrapX: false
+        })
+      }),
       new ol.layer.Tile({
         title: "街道图层",
         source: new ol.source.OSM()
       }),
-      // new ol.layer.Tile({
-      //   title: "Bing卫星图层",
-      //   source: new ol.source.BingMaps({
-      //     key: 'AuyckHLenczLROqmFJEo21sIFL8UxWiJUZylaEDWh9oA4-wjc_Qg1veJ0y5tcezn',
-      //     imagerySet: 'AerialWithLabels'
-      //   })
-      // })
+      new ol.layer.Tile({
+        title: "Bing卫星图层",
+        source: new ol.source.BingMaps({
+          key: 'AuyckHLenczLROqmFJEo21sIFL8UxWiJUZylaEDWh9oA4-wjc_Qg1veJ0y5tcezn',
+          imagerySet: 'AerialWithLabels'
+        })
+      })
     ],
     view: new ol.View({
       projection: 'EPSG:3857',
@@ -2108,15 +2122,15 @@
     xhr.send(data);
   }
 
-  // var layerSelect = document.getElementById('layerSelect');
-  // var layers = map.getLayers().getArray();
-  // for (var i = 0; i < layers.length; i++) {
-  //   var layer = layers[i];
-  //   var option = document.createElement('option');
-  //   option.value = layer.get('title');
-  //   option.text = layer.get('title');
-  //   layerSelect.appendChild(option);
-  // }
+  var layerSelect = document.getElementById('layerSelect');
+  var layers = map.getLayers().getArray();
+  for (var i = 0; i < layers.length; i++) {
+    var layer = layers[i];
+    var option = document.createElement('option');
+    option.value = layer.get('title');
+    option.text = layer.get('title');
+    layerSelect.appendChild(option);
+  }
   //改变地图图层
   function changeLayer() {
     var selectedLayer = layerSelect.value;
@@ -2132,28 +2146,28 @@
     }
   }
 
-  // layerSelect.addEventListener('change', function() {
-  //   var selectedLayer = layerSelect.value;
-  //   var overviewLayers = overviewMapControl.getOverviewMap().getLayers().getArray();
-  //   for (var i = 0; i < overviewLayers.length; i++) {
-  //     var layer = overviewLayers[i];
-  //     if (layer.get('title') === selectedLayer) {
-  //       layer.setVisible(true);
-  //     } else {
-  //       layer.setVisible(false);
-  //     }
-  //   }
-  //
-  //   var overmapLayers = overviewMap.getOverviewMap().getLayers().getArray();
-  //   for (var i = 0; i < overmapLayers.length; i++) {
-  //     var layer = overmapLayers[i];
-  //     if (layer.get('title') === selectedLayer) {
-  //       layer.setVisible(true);
-  //     } else {
-  //       layer.setVisible(false);
-  //     }
-  //   }
-  // });
+  layerSelect.addEventListener('change', function() {
+    var selectedLayer = layerSelect.value;
+    var overviewLayers = overviewMapControl.getOverviewMap().getLayers().getArray();
+    for (var i = 0; i < overviewLayers.length; i++) {
+      var layer = overviewLayers[i];
+      if (layer.get('title') === selectedLayer) {
+        layer.setVisible(true);
+      } else {
+        layer.setVisible(false);
+      }
+    }
+  
+    var overmapLayers = overviewMap.getOverviewMap().getLayers().getArray();
+    for (var i = 0; i < overmapLayers.length; i++) {
+      var layer = overmapLayers[i];
+      if (layer.get('title') === selectedLayer) {
+        layer.setVisible(true);
+      } else {
+        layer.setVisible(false);
+      }
+    }
+  });
 
   // Pagination event listeners
   document.getElementById('prev-page').addEventListener('click', function() {
