@@ -2366,9 +2366,11 @@
         if (tableContent.style.display === 'none') {
             tableContent.style.display = 'block';
             addMarkerBtn.textContent = '-'; // 当表格显示时，按钮文本变成减号
+            addMarkerBtn.title = '点击隐藏机场详细信息'; // 设置提示词语
         } else {
             tableContent.style.display = 'none';
             addMarkerBtn.textContent = '+'; // 当表格隐藏时，按钮文本变成加号
+            addMarkerBtn.title = '点击显示机场详细信息'; // 设置提示词语
         }
     });
 
@@ -2376,16 +2378,18 @@
     var adddataBtn = document.getElementById('data-btn');
     // 获取表格内容元素
     var dataContent = document.querySelector('.chart-wrapper');
-
+    dataContent.style.display='none';
     // 添加点击事件处理程序
     adddataBtn.addEventListener('click', function() {
         // 切换表格的显示状态
         if (dataContent.style.display === 'none') {
             dataContent.style.display = 'block';
             adddataBtn.textContent = '-'; // 当表格显示时，按钮文本变成减号
+            adddataBtn.title = '点击隐藏数据分析'; // 设置提示词语
         } else {
             dataContent.style.display = 'none';
             adddataBtn.textContent = '+'; // 当表格隐藏时，按钮文本变成加号
+            adddataBtn.title = '点击显示数据分析'; // 设置提示词语
         }
     });
 
@@ -2438,6 +2442,7 @@
                     ]
                 };
                 addReBtn.textContent = '-'; // 当表格隐藏时，按钮文本变成加号
+                addReBtn.title='隐藏热力图';
                 reLayer = new ol3Echarts(option);
                 reLayer.appendTo(map);
                 reLayerVisible = true; // 设置图层显示状态为 true
@@ -2447,7 +2452,8 @@
                 reLayerVisible = false; // 设置图层显示状态为 false
 
                 addReBtn.textContent = '+'; // 当表格显示时，按钮文本变成减号
-            }
+                addReBtn.title='显示热力图';
+              }
         });
     });
 
@@ -3209,17 +3215,15 @@
                 ]
             };
             addEchartsBtn.textContent = '-'; // 当表格隐藏时，按钮文本变成加号
+            addEchartsBtn.title='隐藏机场分布';
             echartsLayer = new ol3Echarts(option);
             echartsLayer.appendTo(map);
             echartsLayerVisible = true; // 设置图层显示状态为 true
         } else { // 如果图层已显示，则移除图层
             echartsLayer.remove();
             echartsLayerVisible = false; // 设置图层显示状态为 false
-
             addEchartsBtn.textContent = '+'; // 当表格显示时，按钮文本变成减号
-
-
-
+            addEchartsBtn.title='显示机场分布';
         }
     });
 
