@@ -623,7 +623,7 @@
         <h2>编辑位置信息</h2>
         <form id="editForm">
             <div style="margin-bottom: 50px">
-                <label for="editCommunity">社区名:</label>
+                <label for="editCommunity">机场名:</label>
                 <input type="text" id="editCommunity" name="editCommunity">
             </div>
             <div style="margin-bottom: 50px">
@@ -645,10 +645,10 @@
     <!-- Modal content -->
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>增加新的小区信息</h2>
+        <h2>增加新的机场信息</h2>
         <form id="addForm">
             <div style="margin-bottom: 50px">
-                <label for="addCommunity">社区名:</label>
+                <label for="addCommunity">机场名:</label>
                 <input type="text" id="addCommunity" name="addCommunity">
             </div>
             <div style="margin-bottom: 50px">
@@ -779,10 +779,6 @@
         });
     });
     chart2.setOption(option2);
-
-
-
-
 
     var chart3Dom = document.getElementById('chart3');
     var chart3 = echarts.init(chart3Dom);
@@ -969,9 +965,6 @@
         ]
     };
     chart3.setOption(option3);
-
-
-
 
     var tianditu_token = '76d3f7cf5446ca392ecde77bf851e00e'; // 填入您的token
     var locations = []; // To store all locations data
@@ -1290,15 +1283,6 @@
         });
     });
 
-
-
-
-
-
-
-
-
-
     var echartslayer = new ol3Echarts(getOption());
     echartslayer.appendTo(map)
     function getOption () {
@@ -1563,21 +1547,6 @@
             series: series
         };
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     //添加Echarts图显示处理程序。
     var addEchartsBtn=document.getElementById('add-echarts-btn');
@@ -2058,7 +2027,6 @@
         }
     });
 
-
     function drawFlightRoute() {
         var lineStyle = new ol.style.Style({
             stroke: new ol.style.Stroke({
@@ -2179,7 +2147,6 @@
     }
 
     map.addControl(overviewMap);
-    //******************************
 
     // 使用AJAX请求后端数据，得到所有点的信息
     var xhr = new XMLHttpRequest();
