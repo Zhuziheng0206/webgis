@@ -133,7 +133,7 @@
             cursor: pointer;
         }
         /* 按钮样式 */
-        .add-button {
+        .add-marker-btn {
            /* padding: 10px 20px;
            font-size: 16px;
            border: none;
@@ -143,11 +143,11 @@
            cursor: pointer;
            margin-right: 10px; */
             position: absolute;
-            top: 210px; /* 调整按钮距离顶部的距离 */
+            top: 90px; /* 调整按钮距离顶部的距离 */
             right: 10px; /* 调整按钮距离右侧的距离 */
             width: 100px; /* 按钮宽度 */
             height: 30px; /* 按钮高度 */
-            border-radius: 50%; 
+            border-radius: 20%; 
             background-color: mediumpurple; /* 紫色背景 */
             z-index: 999; /* 确保按钮位于地图之上 */
             color: white; /* 文本颜色 */
@@ -184,7 +184,7 @@
         /* 下拉菜单样式 */
         .select1 {
             position: absolute;
-            top: 240px; /* 调整按钮距离顶部的距离 */
+            top: 130px; /* 调整按钮距离顶部的距离 */
             right: 10px; /* 调整按钮距离右侧的距离 */
             width: 100px; /* 按钮宽度 */
             height: 30px; /* 按钮高度 */
@@ -269,7 +269,7 @@
             height: 50%; /* Could be more or less, depending on screen size */
             z-index: 9999;
         }
-        .add-marker-btn {
+        .add-button {
             position: absolute;
             top: 50px; /* 调整按钮距离顶部的距离 */
             right: 10px; /* 调整按钮距离右侧的距离 */
@@ -286,11 +286,11 @@
         .add-echarts-btn{
             position: absolute;
             top: 90px; /* 调整按钮距离顶部的距离 */
-            right: 10px; /* 调整按钮距离右侧的距离 */
-            width: 30px; /* 按钮宽度 */
+            left: 10px; /* 调整按钮距离右侧的距离 */
+            width: 150px; /* 按钮宽度 */
             height: 30px; /* 按钮高度 */
-            border-radius: 50%; /* 变成圆形 */
-            background-color: mediumpurple; /* 紫色背景 */
+            border-radius: 30%; /* 变成圆形 */
+            background-color: deepskyblue; /* 紫色背景 */
             z-index: 999; /* 确保按钮位于地图之上 */
             color: white; /* 文本颜色 */
             font-size: 20px; /* 文本大小 */
@@ -300,11 +300,11 @@
         .add-re-btn{
             position: absolute;
             top: 130px; /* 调整按钮距离顶部的距离 */
-            right: 10px; /* 调整按钮距离右侧的距离 */
-            width: 30px; /* 按钮宽度 */
+            left: 10px; /* 调整按钮距离右侧的距离 */
+            width: 150px; /* 按钮宽度 */
             height: 30px; /* 按钮高度 */
             border-radius: 50%; /* 变成圆形 */
-            background-color: mediumpurple; /* 紫色背景 */
+            background-color: deepskyblue; /* 紫色背景 */
             z-index: 999; /* 确保按钮位于地图之上 */
             color: white; /* 文本颜色 */
             font-size: 20px; /* 文本大小 */
@@ -315,9 +315,9 @@
             position: absolute;
             top: 100px; /* 调整按钮距离顶部的距离 */
             right: 10px; /* 调整按钮距离右侧的距离 */
-            width: 30px; /* 按钮宽度 */
+            width: 150px; /* 按钮宽度 */
             height: 30px; /* 按钮高度 */
-            border-radius: 50%; /* 变成圆形 */
+            border-radius: 30%; /* 变成圆形 */
             background-color: mediumpurple; /* 紫色背景 */
             z-index: 999; /* 确保按钮位于地图之上 */
             color: white; /* 文本颜色 */
@@ -328,11 +328,11 @@
         .data-btn {
             position: absolute;
             top: 170px; /* 调整按钮距离顶部的距离 */
-            right: 10px; /* 调整按钮距离右侧的距离 */
-            width: 30px; /* 按钮宽度 */
+            left: 10px; /* 调整按钮距离右侧的距离 */
+            width: 150px; /* 按钮宽度 */
             height: 30px; /* 按钮高度 */
-            border-radius: 50%; /* 变成圆形 */
-            background-color: mediumpurple; /* 紫色背景 */
+            border-radius: 30%; /* 变成圆形 */
+            background-color: deepskyblue; /* 紫色背景 */
             z-index: 999; /* 确保按钮位于地图之上 */
             color: white; /* 文本颜色 */
             font-size: 20px; /* 文本大小 */
@@ -485,13 +485,13 @@
 </head>
 
 <body>
-<button id="add-marker-btn" class="add-marker-btn">+</button>
+<button id="add-marker-btn" class="add-marker-btn">机场详情</button>
 
-<button id="add-echarts-btn" class="add-echarts-btn">+</button>
+<button id="add-echarts-btn" class="add-echarts-btn">途径站点</button>
 
-<button id="add-re-btn" class="add-re-btn">+</button>
-<button id="data-btn" class="data-btn">+</button>
-<button class="add-button" id="add-button">增</button>
+<button id="add-re-btn" class="add-re-btn">客流量热力图</button>
+<button id="data-btn" class="data-btn">机场数据分析</button>
+<button class="add-button" id="add-button">+</button>
 
 <div id="selectTu">
     <select class="select1" id="layerSelect" onchange="changeLayer()">
@@ -1191,11 +1191,11 @@
         // 切换表格的显示状态
         if (tableContent.style.display === 'none') {
             tableContent.style.display = 'block';
-            addMarkerBtn.textContent = '-'; // 当表格显示时，按钮文本变成减号
+            
             addMarkerBtn.title = '点击隐藏机场详细信息'; // 设置提示词语
         } else {
             tableContent.style.display = 'none';
-            addMarkerBtn.textContent = '+'; // 当表格隐藏时，按钮文本变成加号
+            
             addMarkerBtn.title = '点击显示机场详细信息'; // 设置提示词语
         }
     });
@@ -1210,11 +1210,11 @@
         // 切换表格的显示状态
         if (dataContent.style.display === 'none') {
             dataContent.style.display = 'block';
-            adddataBtn.textContent = '-'; // 当表格显示时，按钮文本变成减号
+            adddataBtn.textContent = '机场数据分析-'; // 当表格显示时，按钮文本变成减号
             adddataBtn.title = '点击隐藏数据分析'; // 设置提示词语
         } else {
             dataContent.style.display = 'none';
-            adddataBtn.textContent = '+'; // 当表格隐藏时，按钮文本变成加号
+            adddataBtn.textContent = '机场数据分析'; // 当表格隐藏时，按钮文本变成加号
             adddataBtn.title = '点击显示数据分析'; // 设置提示词语
         }
     });
@@ -1267,7 +1267,7 @@
                         }
                     ]
                 };
-                addReBtn.textContent = '-'; // 当表格隐藏时，按钮文本变成加号
+                addReBtn.textContent = '客流量热力图-'; // 当表格隐藏时，按钮文本变成加号
                 addReBtn.title='隐藏热力图';
                 reLayer = new ol3Echarts(option);
                 reLayer.appendTo(map);
@@ -1277,7 +1277,7 @@
                 reLayer.remove();
                 reLayerVisible = false; // 设置图层显示状态为 false
 
-                addReBtn.textContent = '+'; // 当表格显示时，按钮文本变成减号
+                addReBtn.textContent = '客流量热力图'; // 当表格显示时，按钮文本变成减号
                 addReBtn.title='显示热力图';
               }
         });
@@ -2014,16 +2014,16 @@
                     }
                 ]
             };
-            addEchartsBtn.textContent = '-'; // 当表格隐藏时，按钮文本变成加号
-            addEchartsBtn.title='隐藏机场分布';
+            addEchartsBtn.textContent = '途径站点-'; // 当表格隐藏时，按钮文本变成加号
+            addEchartsBtn.title='隐藏途径站点';
             echartsLayer = new ol3Echarts(option);
             echartsLayer.appendTo(map);
             echartsLayerVisible = true; // 设置图层显示状态为 true
         } else { // 如果图层已显示，则移除图层
             echartsLayer.remove();
             echartsLayerVisible = false; // 设置图层显示状态为 false
-            addEchartsBtn.textContent = '+'; // 当表格显示时，按钮文本变成减号
-            addEchartsBtn.title='显示机场分布';
+            addEchartsBtn.textContent = '途径站点'; // 当表格显示时，按钮文本变成减号
+            addEchartsBtn.title='显示途径站点';
         }
     });
 
