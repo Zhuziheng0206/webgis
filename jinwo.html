@@ -387,7 +387,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             width: 1100px;
-            height: 700px;
+            height: 600px;
             z-index: 2;
             display: flex;
             flex-direction: column;
@@ -399,29 +399,39 @@
         .container1 {
             display: flex;
             width: 100%;
-            height: 100%;
+            height: 50%;
         }
 
         .chart-container {
-            flex: 1;
-            width: 100%;
-            padding: 10px;
+            width: 50%;
+            height: 50%;
         }
-        /*#chart1,#chart2 {*/
-        /*  width: calc(50% - 10px); !* 让每个容器占据50%的宽度，减去间距 *!*/
-        /*  margin: 5px; !* 间距为5px *!*/
-        /*}*/
+        .chart-container11 {
+            width: 100%; /* 占据整个宽度 */
 
-        /*!* 针对chart3的样式 *!*/
-        /*#chart3 {*/
-        /*  width: 100%; !* chart3容器占满一行 *!*/
-        /*}*/
-        #chart1,
-        #chart2,
-        #chart3 {
-            width: 100%;
-            height: 100%;
+
         }
+
+        .container11 {
+            width: 100%; /* 占据整个宽度 */
+            height: 50%;
+
+        }
+        #chart1 {
+            width: 400px;
+            height: 300px;
+        }
+
+        #chart2 {
+            width: 400px;
+            height: 300px;
+        }
+
+        #chart3 {
+            width: 100%; /* 使chart3占据整个宽度 */
+            height: 300px;
+        }
+
     </style>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/css/ol.css">
@@ -549,7 +559,9 @@
         <div class="chart-container" id="chart2-container">
             <div id="chart2"></div>
         </div>
-        <div class="chart-container" id="chart3-container">
+    </div>
+    <div class="container11">
+        <div  class="chart-container11" id="chart3-container">
             <div id="chart3"></div>
         </div>
     </div>
@@ -659,8 +671,7 @@
     var chart1 = echarts.init(chart1Dom);
     var option1 = {
         title: {
-            text: 'Referer of a Website',
-            subtext: 'Fake Data',
+            text: '中国不同区域航班数',
             left: 'center'
         },
         tooltip: {
@@ -676,11 +687,11 @@
                 type: 'pie',
                 radius: '50%',
                 data: [
-                    { value: 1048, name: 'Search Engine' },
-                    { value: 735, name: 'Direct' },
-                    { value: 580, name: 'Email' },
-                    { value: 484, name: 'Union Ads' },
-                    { value: 300, name: 'Video Ads' }
+                    { value: 1048, name: '南部' },
+                    { value: 735, name: '东部' },
+                    { value: 580, name: '中部' },
+                    { value: 484, name: '北部' },
+                    { value: 300, name: '西部' }
                 ],
                 emphasis: {
                     itemStyle: {
@@ -699,11 +710,12 @@
     var chart2 = echarts.init(chart2Dom);
     var option2 = {
         title: {
-            text: 'Feature Sample: Gradient Color, Shadow, Click Zoom',
-            subtext: '特性示例：渐变色 阴影 点击缩放'
+            text: '                  中国不同地区中转航班数',
+
         },
         xAxis: {
-            data: ['点', '击', '柱', '子', '或', '者', '两', '指', '在', '触', '屏', '上', '滑', '动', '能', '够', '自', '动', '缩', '放'],
+            data: ['川', '津', '冀', '豫', '鄂', '沪', '粤', '贵', '京', '浙', '云', '桂', '苏', '藏', '琼', '重', '鲁', '辽', '吉', '哈'],
+             position:'bottom',
             axisLabel: {
                 inside: true,
                 color: '#fff'
@@ -777,7 +789,7 @@
     var option3 = {
         color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
         title: {
-            text: 'Gradient Stacked Area Chart'
+            text: '中国不同地区机场在一周内的客流量变化'
         },
         tooltip: {
             trigger: 'axis',
@@ -789,7 +801,7 @@
             }
         },
         legend: {
-            data: ['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5']
+            data: ['西 部', '北 部', '中 部', '东 部', '南 部']
         },
         toolbox: {
             feature: {
@@ -816,7 +828,7 @@
         ],
         series: [
             {
-                name: 'Line 1',
+                name: '西 部',
                 type: 'line',
                 stack: 'Total',
                 smooth: true,
@@ -843,7 +855,7 @@
                 data: [140, 232, 101, 264, 90, 340, 250]
             },
             {
-                name: 'Line 2',
+                name: '北 部',
                 type: 'line',
                 stack: 'Total',
                 smooth: true,
@@ -870,7 +882,7 @@
                 data: [120, 282, 111, 234, 220, 340, 310]
             },
             {
-                name: 'Line 3',
+                name: '中 部',
                 type: 'line',
                 stack: 'Total',
                 smooth: true,
@@ -897,7 +909,7 @@
                 data: [320, 132, 201, 334, 190, 130, 220]
             },
             {
-                name: 'Line 4',
+                name: '东 部',
                 type: 'line',
                 stack: 'Total',
                 smooth: true,
@@ -924,7 +936,7 @@
                 data: [220, 402, 231, 134, 190, 230, 120]
             },
             {
-                name: 'Line 5',
+                name: '南 部',
                 type: 'line',
                 stack: 'Total',
                 smooth: true,
