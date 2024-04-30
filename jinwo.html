@@ -339,6 +339,20 @@
             border: none; /* 移除按钮边框 */
             cursor: pointer; /* 鼠标指针形状 */
         }
+        .fly-btn {
+            position: absolute;
+            top: 210px; /* 调整按钮距离顶部的距离 */
+            left: 10px; /* 调整按钮距离右侧的距离 */
+            width: 150px; /* 按钮宽度 */
+            height: 30px; /* 按钮高度 */
+            border-radius: 30%; /* 变成圆形 */
+            background-color: deepskyblue; /* 紫色背景 */
+            z-index: 999; /* 确保按钮位于地图之上 */
+            color: white; /* 文本颜色 */
+            font-size: 20px; /* 文本大小 */
+            border: none; /* 移除按钮边框 */
+            cursor: pointer; /* 鼠标指针形状 */
+        }
         /*.chart-container {*/
         /*    width: 400px; !* 图表容器宽度 *!*/
         /*    height: 300px; !* 图表容器高度 *!*/
@@ -487,10 +501,13 @@
 <body>
 <button id="add-marker-btn" class="add-marker-btn">机场详情</button>
 
-<button id="add-echarts-btn" class="add-echarts-btn">途径站点</button>
+<button id="add-echarts-btn" class="add-echarts-btn">途经站点</button>
 
 <button id="add-re-btn" class="add-re-btn">客流量热力图</button>
 <button id="data-btn" class="data-btn">机场数据分析</button>
+
+<button id="fly-btn" class="fly-btn">飞机航线图</button>
+
 <button class="add-button" id="add-button">+</button>
 
 <div id="selectTu">
@@ -1283,8 +1300,8 @@
         });
     });
 
-    var echartslayer = new ol3Echarts(getOption());
-    echartslayer.appendTo(map)
+    // var echartslayer = new ol3Echarts(getOption());
+    // echartslayer.appendTo(map)
     function getOption () {
         var geoCoordMap = {
             '上海': [121.4648, 31.2891],
@@ -1547,6 +1564,23 @@
             series: series
         };
     }
+
+
+    var flyBtn=document.getElementById('fly-btn');
+    var flyLayer=null;
+    var flyLayerVisible=false;
+    flyBtn.addEventListener('click', function() {
+        if(!flyLayerVisible){
+            flyLayer = new ol3Echarts(getOption());
+            flyLayer.appendTo(map);
+            flyLayerVisible=true;
+        }else{
+            flyLayer.remove();
+            flyLayerVisible=false;
+            
+        }
+    });
+
 
     //添加Echarts图显示处理程序。
     var addEchartsBtn=document.getElementById('add-echarts-btn');
@@ -2014,16 +2048,16 @@
                     }
                 ]
             };
-            addEchartsBtn.textContent = '途径站点-'; // 当表格隐藏时，按钮文本变成加号
-            addEchartsBtn.title='隐藏途径站点';
+            addEchartsBtn.textContent = '途经点-'; // 当表格隐藏时，按钮文本变成加号
+            addEchartsBtn.title='隐藏途经站点';
             echartsLayer = new ol3Echarts(option);
             echartsLayer.appendTo(map);
             echartsLayerVisible = true; // 设置图层显示状态为 true
         } else { // 如果图层已显示，则移除图层
             echartsLayer.remove();
             echartsLayerVisible = false; // 设置图层显示状态为 false
-            addEchartsBtn.textContent = '途径站点'; // 当表格显示时，按钮文本变成减号
-            addEchartsBtn.title='显示途径站点';
+            addEchartsBtn.textContent = '途经站点'; // 当表格显示时，按钮文本变成减号
+            addEchartsBtn.title='显示途经站点';
         }
     });
 
