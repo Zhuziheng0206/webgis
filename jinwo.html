@@ -1208,11 +1208,11 @@
         // 切换表格的显示状态
         if (tableContent.style.display === 'none') {
             tableContent.style.display = 'block';
-            
+            addMarkerBtn.style.color='red';
             addMarkerBtn.title = '点击隐藏机场详细信息'; // 设置提示词语
         } else {
             tableContent.style.display = 'none';
-            
+            addMarkerBtn.style.color='white';
             addMarkerBtn.title = '点击显示机场详细信息'; // 设置提示词语
         }
     });
